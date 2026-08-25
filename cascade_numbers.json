@@ -1,0 +1,964 @@
+{
+  "constants": {
+    "tick_s": 0.5,
+    "liquid_feed_L_tick": 0.25,
+    "chamber_hx_m2": 15.0,
+    "chamber_hx_J_tick_K_at_1atm": 750.0,
+    "radiator_J_tick_K_at_1atm": 52.5,
+    "cfhe_J_tick_K": 750.0,
+    "cfhe_eta_per_unit": 0.7,
+    "room_C": 40.0,
+    "dump_loop_C": 55.0,
+    "load_C": -180.0,
+    "hx_derate": "Heat exchange scales with clamp(P/101.325 kPa, 0..1) on BOTH sides. Keep coupling loops >= 150 kPa (wiki) and ideally >= 1 atm.",
+    "evap_chamber": "0.25 L/tick liquid regulator targeting 20 L (10%). Gas purge ~15 MPa*L/tick. HX area 15 m2.",
+    "cfhe": "Balances pressure / liquid fraction, then 48 sliding-window transfers at 15.625 W*dT*eta. ~70% temp swap per unit; daisy-chain."
+  },
+  "coupling_windows": {
+    "X_evap_min_C": -99.83,
+    "CH4_cond_max_C": -78.15,
+    "N2_cond_max_C": -83.15,
+    "X_to_CH4_window_K": 21.68,
+    "X_to_N2_window_K": 16.68,
+    "SIL_to_N2_window_K": 26.0,
+    "O2_crit_C": -110.95,
+    "X_cannot_condense_O2": true,
+    "comment": "Pollutant freeze (-99.8 C) is below CH4 crit (-78 C) and N2 crit (-83 C), so X can condense those. O2 crit is -111 C \u2014 colder than X freeze \u2014 so X cannot condense O2. Alcohol/N2O/HCl freeze too warm to condense CH4/N2. Ozone/CO2 cannot dump at +40 C."
+  },
+  "media_roles": [
+    {
+      "symbol": "N2",
+      "name": "Nitrogen",
+      "t_freeze_C": -233.1,
+      "t_crit_C": -83.1,
+      "can_dump_40C": false,
+      "can_reach_CH4_cond": true,
+      "role": "cannot dump at +40 C, STAGE-last capable for -180 C",
+      "notes": "Wiki table + chart. MW from research wiki (community wiki scrape sometimes lists 64)."
+    },
+    {
+      "symbol": "O2",
+      "name": "Oxygen",
+      "t_freeze_C": -216.7,
+      "t_crit_C": -110.9,
+      "can_dump_40C": false,
+      "can_reach_CH4_cond": true,
+      "role": "cannot dump at +40 C, STAGE-last capable for -180 C",
+      "notes": "Wiki table. Chart extra: 81 K / 250 kPa."
+    },
+    {
+      "symbol": "CH4",
+      "name": "Methane / Volatiles",
+      "t_freeze_C": -191.5,
+      "t_crit_C": -78.1,
+      "can_dump_40C": false,
+      "can_reach_CH4_cond": true,
+      "role": "cannot dump at +40 C, STAGE-last capable for -180 C",
+      "notes": "Post-2026 split: chart CH4 matches old Volatiles phase data (195 K @ 6 MPa, freeze 81.6 K)."
+    },
+    {
+      "symbol": "H2",
+      "name": "Hydrogen",
+      "t_freeze_C": -258.1,
+      "t_crit_C": -203.1,
+      "can_dump_40C": false,
+      "can_reach_CH4_cond": true,
+      "role": "cannot dump at +40 C",
+      "notes": "Chart 2026-04-19: 15 K @ 6 kPa, 70 K @ 6 MPa. Lowest freeze. Cannot condense until -203 C \u2014 coupling gas / LH2 only, not a -180 C refrigerant."
+    },
+    {
+      "symbol": "X",
+      "name": "Pollutant",
+      "t_freeze_C": -99.8,
+      "t_crit_C": 151.9,
+      "can_dump_40C": true,
+      "can_reach_CH4_cond": true,
+      "role": "STAGE-1 capable",
+      "notes": "Min condensation 1.8 MPa at freeze \u2014 always a high-pressure liquid. Only common gas that both dumps at +40 C and reaches CH4/N2 condenser temps."
+    },
+    {
+      "symbol": "CO2",
+      "name": "Carbon Dioxide",
+      "t_freeze_C": -55.3,
+      "t_crit_C": -8.1,
+      "can_dump_40C": false,
+      "can_reach_CH4_cond": false,
+      "role": "cannot dump at +40 C",
+      "notes": "T_crit -8 C: cannot dump at +40 C. Freeze = min-cond T: dry-ice pipe risk."
+    },
+    {
+      "symbol": "N2O",
+      "name": "Nitrous Oxide",
+      "t_freeze_C": -21.0,
+      "t_crit_C": 157.5,
+      "can_dump_40C": true,
+      "can_reach_CH4_cond": false,
+      "role": "warm-only (cannot couple to CH4/N2)",
+      "notes": "Can dump at +40 C but freeze -21 C \u2014 cannot condense CH4/N2. Strong latent, useful only as a warm extra stage."
+    },
+    {
+      "symbol": "H2O",
+      "name": "Water",
+      "t_freeze_C": 0.0,
+      "t_crit_C": 369.9,
+      "can_dump_40C": true,
+      "can_reach_CH4_cond": false,
+      "role": "warm-only (cannot couple to CH4/N2)",
+      "notes": "Huge latent, freezes at 0 C. Not a cascade refrigerant below ambient. HX port on chambers is gas-only so dump loop cannot be liquid water."
+    },
+    {
+      "symbol": "Sil",
+      "name": "Silanol",
+      "t_freeze_C": -109.1,
+      "t_crit_C": 548.5,
+      "can_dump_40C": true,
+      "can_reach_CH4_cond": true,
+      "role": "STAGE-1 capable",
+      "notes": "Wiki: highest latent of reversible refrigerants; 6.25 mol/L; 15.625 kJ/tick at 0.25 L/tick. Chart: 822 K @ 6 MPa, 164 K @ 516 kPa (used as freeze/min-cond). Late-game."
+    },
+    {
+      "symbol": "ALC",
+      "name": "Alcohol",
+      "t_freeze_C": -41.1,
+      "t_crit_C": 150.9,
+      "can_dump_40C": true,
+      "can_reach_CH4_cond": false,
+      "role": "warm-only (cannot couple to CH4/N2)",
+      "notes": "Chart only: 232 K @ 6 kPa, 424 K @ 1.0 MPa. Liquid at +40 C but freeze ~-41 C \u2014 cannot reach CH4/N2. Vacuum decomposes to methane."
+    },
+    {
+      "symbol": "HCl",
+      "name": "Hydrochloric Acid",
+      "t_freeze_C": -26.1,
+      "t_crit_C": 157.9,
+      "can_dump_40C": true,
+      "can_reach_CH4_cond": false,
+      "role": "warm-only (cannot couple to CH4/N2)",
+      "notes": "Chart: 247 K @ 6 kPa, 431 K @ ~1-2 MPa. Similar window to N2O/alcohol. Wiki: inferior to N2O/Silanol/X for phase change."
+    },
+    {
+      "symbol": "O3",
+      "name": "Ozone",
+      "t_freeze_C": null,
+      "t_crit_C": 30.9,
+      "can_dump_40C": false,
+      "can_reach_CH4_cond": false,
+      "role": "cannot dump at +40 C",
+      "notes": "Chart: T_crit 304 K (31 C) @ 6 MPa. Cannot condense at +40 C under 6 MPa."
+    },
+    {
+      "symbol": "N2H4",
+      "name": "Hydrazine / Fuel",
+      "t_freeze_C": null,
+      "t_crit_C": 247.9,
+      "can_dump_40C": true,
+      "can_reach_CH4_cond": false,
+      "role": "warm-only (cannot couple to CH4/N2)",
+      "notes": "Chart: 521 K @ 6 MPa. Liquid at room T. Hypergolic / toxic \u2014 do not use as AC media."
+    }
+  ],
+  "saturation": {
+    "X": [
+      {
+        "T_C": 40,
+        "T_K": 313.15,
+        "in_liquid_window": true,
+        "p_logT_kPa": 3516.19,
+        "p_Antoine_kPa": 4466.21,
+        "reason": "ok"
+      },
+      {
+        "T_C": 55,
+        "T_K": 328.15,
+        "in_liquid_window": true,
+        "p_logT_kPa": 3777.42,
+        "p_Antoine_kPa": 4701.19,
+        "reason": "ok"
+      },
+      {
+        "T_C": 70,
+        "T_K": 343.15,
+        "in_liquid_window": true,
+        "p_logT_kPa": 4058.07,
+        "p_Antoine_kPa": 4926.4,
+        "reason": "ok"
+      },
+      {
+        "T_C": 100,
+        "T_K": 373.15,
+        "in_liquid_window": true,
+        "p_logT_kPa": 4683.46,
+        "p_Antoine_kPa": 5349.0,
+        "reason": "ok"
+      },
+      {
+        "T_C": -80,
+        "T_K": 193.15,
+        "in_liquid_window": true,
+        "p_logT_kPa": 1981.9,
+        "p_Antoine_kPa": 2224.69,
+        "reason": "ok"
+      },
+      {
+        "T_C": -90,
+        "T_K": 183.15,
+        "in_liquid_window": true,
+        "p_logT_kPa": 1889.44,
+        "p_Antoine_kPa": 2014.39,
+        "reason": "ok"
+      },
+      {
+        "T_C": -93,
+        "T_K": 180.15,
+        "in_liquid_window": true,
+        "p_logT_kPa": 1862.55,
+        "p_Antoine_kPa": 1951.07,
+        "reason": "ok"
+      },
+      {
+        "T_C": -99,
+        "T_K": 174.15,
+        "in_liquid_window": true,
+        "p_logT_kPa": 1809.92,
+        "p_Antoine_kPa": 1824.3,
+        "reason": "ok"
+      }
+    ],
+    "CH4": [
+      {
+        "T_C": -78,
+        "T_K": 195.15,
+        "in_liquid_window": false,
+        "p_logT_kPa": null,
+        "p_Antoine_kPa": null,
+        "reason": "above T_crit"
+      },
+      {
+        "T_C": -83,
+        "T_K": 190.15,
+        "in_liquid_window": true,
+        "p_logT_kPa": 4723.32,
+        "p_Antoine_kPa": 5211.36,
+        "reason": "ok"
+      },
+      {
+        "T_C": -90,
+        "T_K": 183.15,
+        "in_liquid_window": true,
+        "p_logT_kPa": 3344.13,
+        "p_Antoine_kPa": 4196.68,
+        "reason": "ok"
+      },
+      {
+        "T_C": -120,
+        "T_K": 153.15,
+        "in_liquid_window": true,
+        "p_logT_kPa": 761.34,
+        "p_Antoine_kPa": 1325.8,
+        "reason": "ok"
+      },
+      {
+        "T_C": -145,
+        "T_K": 128.15,
+        "in_liquid_window": true,
+        "p_logT_kPa": 221.81,
+        "p_Antoine_kPa": 336.11,
+        "reason": "ok"
+      },
+      {
+        "T_C": -173,
+        "T_K": 100.15,
+        "in_liquid_window": true,
+        "p_logT_kPa": 34.04,
+        "p_Antoine_kPa": 41.56,
+        "reason": "ok"
+      },
+      {
+        "T_C": -180,
+        "T_K": 93.15,
+        "in_liquid_window": true,
+        "p_logT_kPa": 18.01,
+        "p_Antoine_kPa": 22.28,
+        "reason": "ok"
+      },
+      {
+        "T_C": -185,
+        "T_K": 88.15,
+        "in_liquid_window": true,
+        "p_logT_kPa": 11.43,
+        "p_Antoine_kPa": 13.43,
+        "reason": "ok"
+      },
+      {
+        "T_C": -191,
+        "T_K": 82.15,
+        "in_liquid_window": true,
+        "p_logT_kPa": 6.62,
+        "p_Antoine_kPa": 6.74,
+        "reason": "ok"
+      }
+    ],
+    "N2": [
+      {
+        "T_C": -83,
+        "T_K": 190.15,
+        "in_liquid_window": false,
+        "p_logT_kPa": null,
+        "p_Antoine_kPa": null,
+        "reason": "above T_crit"
+      },
+      {
+        "T_C": -88,
+        "T_K": 185.15,
+        "in_liquid_window": true,
+        "p_logT_kPa": 5048.47,
+        "p_Antoine_kPa": 5594.66,
+        "reason": "ok"
+      },
+      {
+        "T_C": -100,
+        "T_K": 173.15,
+        "in_liquid_window": true,
+        "p_logT_kPa": 3293.16,
+        "p_Antoine_kPa": 4627.0,
+        "reason": "ok"
+      },
+      {
+        "T_C": -135,
+        "T_K": 138.15,
+        "in_liquid_window": true,
+        "p_logT_kPa": 947.19,
+        "p_Antoine_kPa": 2202.47,
+        "reason": "ok"
+      },
+      {
+        "T_C": -160,
+        "T_K": 113.15,
+        "in_liquid_window": true,
+        "p_logT_kPa": 388.94,
+        "p_Antoine_kPa": 978.41,
+        "reason": "ok"
+      },
+      {
+        "T_C": -180,
+        "T_K": 93.15,
+        "in_liquid_window": true,
+        "p_logT_kPa": 190.83,
+        "p_Antoine_kPa": 373.62,
+        "reason": "ok"
+      },
+      {
+        "T_C": -185,
+        "T_K": 88.15,
+        "in_liquid_window": true,
+        "p_logT_kPa": 159.71,
+        "p_Antoine_kPa": 274.32,
+        "reason": "ok"
+      },
+      {
+        "T_C": -198,
+        "T_K": 75.15,
+        "in_liquid_window": true,
+        "p_logT_kPa": 100.54,
+        "p_Antoine_kPa": 101.36,
+        "reason": "ok"
+      },
+      {
+        "T_C": -220,
+        "T_K": 53.15,
+        "in_liquid_window": true,
+        "p_logT_kPa": 17.79,
+        "p_Antoine_kPa": 27.26,
+        "reason": "ok"
+      }
+    ],
+    "O2": [
+      {
+        "T_C": -111,
+        "T_K": 162.15,
+        "in_liquid_window": true,
+        "p_logT_kPa": 5988.27,
+        "p_Antoine_kPa": 5994.14,
+        "reason": "ok"
+      },
+      {
+        "T_C": -140,
+        "T_K": 133.15,
+        "in_liquid_window": true,
+        "p_logT_kPa": 1924.73,
+        "p_Antoine_kPa": 3004.45,
+        "reason": "ok"
+      },
+      {
+        "T_C": -180,
+        "T_K": 93.15,
+        "in_liquid_window": true,
+        "p_logT_kPa": 402.22,
+        "p_Antoine_kPa": 572.21,
+        "reason": "ok"
+      },
+      {
+        "T_C": -192,
+        "T_K": 81.15,
+        "in_liquid_window": true,
+        "p_logT_kPa": 251.47,
+        "p_Antoine_kPa": 252.95,
+        "reason": "ok"
+      }
+    ],
+    "SIL": [
+      {
+        "T_C": 70,
+        "T_K": 343.15,
+        "in_liquid_window": true,
+        "p_logT_kPa": 1006.69,
+        "p_Antoine_kPa": 2556.44,
+        "reason": "ok"
+      },
+      {
+        "T_C": 40,
+        "T_K": 313.15,
+        "in_liquid_window": true,
+        "p_logT_kPa": 900.1,
+        "p_Antoine_kPa": 2221.71,
+        "reason": "ok"
+      },
+      {
+        "T_C": -80,
+        "T_K": 193.15,
+        "in_liquid_window": true,
+        "p_logT_kPa": 575.28,
+        "p_Antoine_kPa": 819.51,
+        "reason": "ok"
+      },
+      {
+        "T_C": -100,
+        "T_K": 173.15,
+        "in_liquid_window": true,
+        "p_logT_kPa": 533.92,
+        "p_Antoine_kPa": 606.73,
+        "reason": "ok"
+      },
+      {
+        "T_C": -109,
+        "T_K": 164.15,
+        "in_liquid_window": true,
+        "p_logT_kPa": 516.29,
+        "p_Antoine_kPa": 517.45,
+        "reason": "ok"
+      }
+    ],
+    "N2O": [
+      {
+        "T_C": 40,
+        "T_K": 313.15,
+        "in_liquid_window": true,
+        "p_logT_kPa": 1094.44,
+        "p_Antoine_kPa": 1230.94,
+        "reason": "ok"
+      },
+      {
+        "T_C": 70,
+        "T_K": 343.15,
+        "in_liquid_window": true,
+        "p_logT_kPa": 1276.65,
+        "p_Antoine_kPa": 1438.14,
+        "reason": "ok"
+      },
+      {
+        "T_C": 0,
+        "T_K": 273.15,
+        "in_liquid_window": true,
+        "p_logT_kPa": 891.29,
+        "p_Antoine_kPa": 948.57,
+        "reason": "ok"
+      },
+      {
+        "T_C": -15,
+        "T_K": 258.15,
+        "in_liquid_window": true,
+        "p_logT_kPa": 825.23,
+        "p_Antoine_kPa": 842.53,
+        "reason": "ok"
+      },
+      {
+        "T_C": -21,
+        "T_K": 252.15,
+        "in_liquid_window": true,
+        "p_logT_kPa": 800.21,
+        "p_Antoine_kPa": 800.35,
+        "reason": "ok"
+      }
+    ],
+    "ALC": [
+      {
+        "T_C": 40,
+        "T_K": 313.15,
+        "in_liquid_window": true,
+        "p_logT_kPa": 52.15,
+        "p_Antoine_kPa": 112.11,
+        "reason": "ok"
+      },
+      {
+        "T_C": 70,
+        "T_K": 343.15,
+        "in_liquid_window": true,
+        "p_logT_kPa": 115.98,
+        "p_Antoine_kPa": 233.05,
+        "reason": "ok"
+      },
+      {
+        "T_C": 0,
+        "T_K": 273.15,
+        "in_liquid_window": true,
+        "p_logT_kPa": 17.96,
+        "p_Antoine_kPa": 32.91,
+        "reason": "ok"
+      },
+      {
+        "T_C": -30,
+        "T_K": 243.15,
+        "in_liquid_window": true,
+        "p_logT_kPa": 8.08,
+        "p_Antoine_kPa": 10.07,
+        "reason": "ok"
+      },
+      {
+        "T_C": -41,
+        "T_K": 232.15,
+        "in_liquid_window": true,
+        "p_logT_kPa": 6.02,
+        "p_Antoine_kPa": 6.04,
+        "reason": "ok"
+      }
+    ]
+  },
+  "cascades": {
+    "A_two_stage_X_CH4": {
+      "name": "A_two_stage_X_CH4",
+      "stages": [
+        {
+          "tag": "S1 dump",
+          "media": "Pollutant",
+          "symbol": "X",
+          "t_cond_K": 343.15,
+          "t_cond_C": 70.0,
+          "t_evap_K": 180.15,
+          "t_evap_C": -93.0,
+          "p_cond_kPa_logT": 4058.1,
+          "p_evap_kPa_logT": 1862.6,
+          "p_cond_kPa_Antoine": 4926.4,
+          "p_evap_kPa_Antoine": 1951.1,
+          "n_cfhe": 3,
+          "cfhe_eta": 0.973,
+          "sensible_over_latent": 2.021,
+          "useful_frac": 0.9454,
+          "mol_tick_feed": 6.25,
+          "q_latent_kj_tick": 12.5,
+          "q_useful_kj_tick": 11.818,
+          "q_useful_kW_SI": 23.636,
+          "q_hx_cond_kj_tick": 11.25,
+          "q_hx_evap_kj_tick": 6.0,
+          "freeze_margin_K": 6.83,
+          "crit_margin_K": 81.85,
+          "stage_bottleneck": "chamber_hx_evap_kj_tick",
+          "stage_limit_kj_tick": 6.0
+        },
+        {
+          "tag": "S2 cryo",
+          "media": "Methane / Volatiles",
+          "symbol": "CH4",
+          "t_cond_K": 190.15,
+          "t_cond_C": -83.0,
+          "t_evap_K": 88.15,
+          "t_evap_C": -185.0,
+          "p_cond_kPa_logT": 4723.3,
+          "p_evap_kPa_logT": 11.4,
+          "p_cond_kPa_Antoine": 5211.4,
+          "p_evap_kPa_Antoine": 13.4,
+          "n_cfhe": 3,
+          "cfhe_eta": 0.973,
+          "sensible_over_latent": 2.081,
+          "useful_frac": 0.9438,
+          "mol_tick_feed": 6.25,
+          "q_latent_kj_tick": 6.25,
+          "q_useful_kj_tick": 5.899,
+          "q_useful_kW_SI": 11.798,
+          "q_hx_cond_kj_tick": 6.0,
+          "q_hx_evap_kj_tick": 0.677,
+          "freeze_margin_K": 6.55,
+          "crit_margin_K": 4.85,
+          "stage_bottleneck": "chamber_hx_evap_kj_tick",
+          "stage_limit_kj_tick": 0.677
+        }
+      ],
+      "load_q_kj_tick": 5.899,
+      "load_q_kW_SI": 11.798,
+      "chain_limit_kj_tick": 0.677,
+      "chain_bottleneck_stage": "S2 cryo",
+      "chain_bottleneck_kind": "chamber_hx_evap_kj_tick",
+      "upstream_covers_load": [
+        {
+          "tag": "S1 dump",
+          "limit": 6.0,
+          "covers_load": true
+        },
+        {
+          "tag": "S2 cryo",
+          "limit": 0.677,
+          "covers_load": false
+        }
+      ],
+      "dump_radiators": {
+        "dt_K": 15.0,
+        "q_per_radiator_kj_tick": 0.7875,
+        "q_per_radiator_kW_SI": 1.575,
+        "radiators_needed": 16,
+        "note": "Not the cascade bottleneck: user can add any number on one pipe. Size for the heat the stages actually pump."
+      },
+      "dump_radiators_for_chain_limit": {
+        "dt_K": 15.0,
+        "q_per_radiator_kj_tick": 0.7875,
+        "q_per_radiator_kW_SI": 1.575,
+        "radiators_needed": 1,
+        "note": "Not the cascade bottleneck: user can add any number on one pipe. Size for the heat the stages actually pump."
+      },
+      "ln2_product": {
+        "target_C": -180.0,
+        "target_K": 93.14999999999998,
+        "p_sat_logT_kPa": 190.83,
+        "p_sat_Antoine_kPa": 373.62,
+        "wiki_boil_100kPa_C": -198.1,
+        "how": "Tap LN2 from the N2 condensation chamber liquid output if N2 is a refrigerant stage; otherwise hang a dedicated N2 condenser on the last-stage evaporator HX (H2 coupling gas)."
+      }
+    },
+    "B_two_stage_X_N2": {
+      "name": "B_two_stage_X_N2",
+      "stages": [
+        {
+          "tag": "S1 dump",
+          "media": "Pollutant",
+          "symbol": "X",
+          "t_cond_K": 343.15,
+          "t_cond_C": 70.0,
+          "t_evap_K": 180.15,
+          "t_evap_C": -93.0,
+          "p_cond_kPa_logT": 4058.1,
+          "p_evap_kPa_logT": 1862.6,
+          "p_cond_kPa_Antoine": 4926.4,
+          "p_evap_kPa_Antoine": 1951.1,
+          "n_cfhe": 3,
+          "cfhe_eta": 0.973,
+          "sensible_over_latent": 2.021,
+          "useful_frac": 0.9454,
+          "mol_tick_feed": 6.25,
+          "q_latent_kj_tick": 12.5,
+          "q_useful_kj_tick": 11.818,
+          "q_useful_kW_SI": 23.636,
+          "q_hx_cond_kj_tick": 11.25,
+          "q_hx_evap_kj_tick": 3.75,
+          "freeze_margin_K": 6.83,
+          "crit_margin_K": 81.85,
+          "stage_bottleneck": "chamber_hx_evap_kj_tick",
+          "stage_limit_kj_tick": 3.75
+        },
+        {
+          "tag": "S2 cryo",
+          "media": "Nitrogen",
+          "symbol": "N2",
+          "t_cond_K": 185.15,
+          "t_cond_C": -88.0,
+          "t_evap_K": 88.15,
+          "t_evap_C": -185.0,
+          "p_cond_kPa_logT": 5048.5,
+          "p_evap_kPa_logT": 159.7,
+          "p_cond_kPa_Antoine": 5594.7,
+          "p_evap_kPa_Antoine": 274.3,
+          "n_cfhe": 4,
+          "cfhe_eta": 0.9919,
+          "sensible_over_latent": 3.996,
+          "useful_frac": 0.9676,
+          "mol_tick_feed": 7.1839,
+          "q_latent_kj_tick": 3.592,
+          "q_useful_kj_tick": 3.476,
+          "q_useful_kW_SI": 6.951,
+          "q_hx_cond_kj_tick": 3.75,
+          "q_hx_evap_kj_tick": 6.0,
+          "freeze_margin_K": 48.14,
+          "crit_margin_K": 4.85,
+          "stage_bottleneck": "liquid_feed_useful_kj_tick",
+          "stage_limit_kj_tick": 3.476
+        }
+      ],
+      "load_q_kj_tick": 3.476,
+      "load_q_kW_SI": 6.952,
+      "chain_limit_kj_tick": 3.476,
+      "chain_bottleneck_stage": "S2 cryo",
+      "chain_bottleneck_kind": "liquid_feed_useful_kj_tick",
+      "upstream_covers_load": [
+        {
+          "tag": "S1 dump",
+          "limit": 3.75,
+          "covers_load": true
+        },
+        {
+          "tag": "S2 cryo",
+          "limit": 3.476,
+          "covers_load": true
+        }
+      ],
+      "dump_radiators": {
+        "dt_K": 15.0,
+        "q_per_radiator_kj_tick": 0.7875,
+        "q_per_radiator_kW_SI": 1.575,
+        "radiators_needed": 16,
+        "note": "Not the cascade bottleneck: user can add any number on one pipe. Size for the heat the stages actually pump."
+      },
+      "dump_radiators_for_chain_limit": {
+        "dt_K": 15.0,
+        "q_per_radiator_kj_tick": 0.7875,
+        "q_per_radiator_kW_SI": 1.575,
+        "radiators_needed": 5,
+        "note": "Not the cascade bottleneck: user can add any number on one pipe. Size for the heat the stages actually pump."
+      },
+      "ln2_product": {
+        "target_C": -180.0,
+        "target_K": 93.14999999999998,
+        "p_sat_logT_kPa": 190.83,
+        "p_sat_Antoine_kPa": 373.62,
+        "wiki_boil_100kPa_C": -198.1,
+        "how": "Tap LN2 from the N2 condensation chamber liquid output if N2 is a refrigerant stage; otherwise hang a dedicated N2 condenser on the last-stage evaporator HX (H2 coupling gas)."
+      }
+    },
+    "C_three_stage_X_CH4_N2": {
+      "name": "C_three_stage_X_CH4_N2",
+      "stages": [
+        {
+          "tag": "S1 dump",
+          "media": "Pollutant",
+          "symbol": "X",
+          "t_cond_K": 343.15,
+          "t_cond_C": 70.0,
+          "t_evap_K": 180.15,
+          "t_evap_C": -93.0,
+          "p_cond_kPa_logT": 4058.1,
+          "p_evap_kPa_logT": 1862.6,
+          "p_cond_kPa_Antoine": 4926.4,
+          "p_evap_kPa_Antoine": 1951.1,
+          "n_cfhe": 2,
+          "cfhe_eta": 0.91,
+          "sensible_over_latent": 2.021,
+          "useful_frac": 0.8181,
+          "mol_tick_feed": 6.25,
+          "q_latent_kj_tick": 12.5,
+          "q_useful_kj_tick": 10.226,
+          "q_useful_kW_SI": 20.452,
+          "q_hx_cond_kj_tick": 11.25,
+          "q_hx_evap_kj_tick": 6.0,
+          "freeze_margin_K": 6.83,
+          "crit_margin_K": 81.85,
+          "stage_bottleneck": "chamber_hx_evap_kj_tick",
+          "stage_limit_kj_tick": 6.0
+        },
+        {
+          "tag": "S2 mid",
+          "media": "Methane / Volatiles",
+          "symbol": "CH4",
+          "t_cond_K": 190.15,
+          "t_cond_C": -83.0,
+          "t_evap_K": 128.15,
+          "t_evap_C": -145.0,
+          "p_cond_kPa_logT": 4723.3,
+          "p_evap_kPa_logT": 221.8,
+          "p_cond_kPa_Antoine": 5211.4,
+          "p_evap_kPa_Antoine": 336.1,
+          "n_cfhe": 2,
+          "cfhe_eta": 0.91,
+          "sensible_over_latent": 1.265,
+          "useful_frac": 0.8862,
+          "mol_tick_feed": 6.25,
+          "q_latent_kj_tick": 6.25,
+          "q_useful_kj_tick": 5.539,
+          "q_useful_kW_SI": 11.077,
+          "q_hx_cond_kj_tick": 6.0,
+          "q_hx_evap_kj_tick": 6.0,
+          "freeze_margin_K": 46.55,
+          "crit_margin_K": 4.85,
+          "stage_bottleneck": "liquid_feed_useful_kj_tick",
+          "stage_limit_kj_tick": 5.539
+        },
+        {
+          "tag": "S3 cryo",
+          "media": "Nitrogen",
+          "symbol": "N2",
+          "t_cond_K": 138.15,
+          "t_cond_C": -135.0,
+          "t_evap_K": 88.15,
+          "t_evap_C": -185.0,
+          "p_cond_kPa_logT": 947.2,
+          "p_evap_kPa_logT": 159.7,
+          "p_cond_kPa_Antoine": 2202.5,
+          "p_evap_kPa_Antoine": 274.3,
+          "n_cfhe": 3,
+          "cfhe_eta": 0.973,
+          "sensible_over_latent": 2.06,
+          "useful_frac": 0.9444,
+          "mol_tick_feed": 7.1839,
+          "q_latent_kj_tick": 3.592,
+          "q_useful_kj_tick": 3.392,
+          "q_useful_kW_SI": 6.784,
+          "q_hx_cond_kj_tick": 6.0,
+          "q_hx_evap_kj_tick": 6.0,
+          "freeze_margin_K": 48.14,
+          "crit_margin_K": 51.85,
+          "stage_bottleneck": "liquid_feed_useful_kj_tick",
+          "stage_limit_kj_tick": 3.392
+        }
+      ],
+      "load_q_kj_tick": 3.392,
+      "load_q_kW_SI": 6.784,
+      "chain_limit_kj_tick": 3.392,
+      "chain_bottleneck_stage": "S3 cryo",
+      "chain_bottleneck_kind": "liquid_feed_useful_kj_tick",
+      "upstream_covers_load": [
+        {
+          "tag": "S1 dump",
+          "limit": 6.0,
+          "covers_load": true
+        },
+        {
+          "tag": "S2 mid",
+          "limit": 5.539,
+          "covers_load": true
+        },
+        {
+          "tag": "S3 cryo",
+          "limit": 3.392,
+          "covers_load": true
+        }
+      ],
+      "dump_radiators": {
+        "dt_K": 15.0,
+        "q_per_radiator_kj_tick": 0.7875,
+        "q_per_radiator_kW_SI": 1.575,
+        "radiators_needed": 13,
+        "note": "Not the cascade bottleneck: user can add any number on one pipe. Size for the heat the stages actually pump."
+      },
+      "dump_radiators_for_chain_limit": {
+        "dt_K": 15.0,
+        "q_per_radiator_kj_tick": 0.7875,
+        "q_per_radiator_kW_SI": 1.575,
+        "radiators_needed": 5,
+        "note": "Not the cascade bottleneck: user can add any number on one pipe. Size for the heat the stages actually pump."
+      },
+      "ln2_product": {
+        "target_C": -180.0,
+        "target_K": 93.14999999999998,
+        "p_sat_logT_kPa": 190.83,
+        "p_sat_Antoine_kPa": 373.62,
+        "wiki_boil_100kPa_C": -198.1,
+        "how": "Tap LN2 from the N2 condensation chamber liquid output if N2 is a refrigerant stage; otherwise hang a dedicated N2 condenser on the last-stage evaporator HX (H2 coupling gas)."
+      }
+    },
+    "D_late_silanol_N2": {
+      "name": "D_late_silanol_N2",
+      "stages": [
+        {
+          "tag": "S1 dump",
+          "media": "Silanol",
+          "symbol": "Sil",
+          "t_cond_K": 343.15,
+          "t_cond_C": 70.0,
+          "t_evap_K": 173.15,
+          "t_evap_C": -100.0,
+          "p_cond_kPa_logT": 1006.7,
+          "p_evap_kPa_logT": 533.9,
+          "p_cond_kPa_Antoine": 2556.4,
+          "p_evap_kPa_Antoine": 606.7,
+          "n_cfhe": 3,
+          "cfhe_eta": 0.973,
+          "sensible_over_latent": null,
+          "useful_frac": 1.0,
+          "mol_tick_feed": 1.5625,
+          "q_latent_kj_tick": 15.625,
+          "q_useful_kj_tick": 15.625,
+          "q_useful_kW_SI": 31.25,
+          "q_hx_cond_kj_tick": 11.25,
+          "q_hx_evap_kj_tick": 7.5,
+          "freeze_margin_K": 9.15,
+          "crit_margin_K": 478.52,
+          "stage_bottleneck": "chamber_hx_evap_kj_tick",
+          "stage_limit_kj_tick": 7.5
+        },
+        {
+          "tag": "S2 cryo",
+          "media": "Nitrogen",
+          "symbol": "N2",
+          "t_cond_K": 185.15,
+          "t_cond_C": -88.0,
+          "t_evap_K": 88.15,
+          "t_evap_C": -185.0,
+          "p_cond_kPa_logT": 5048.5,
+          "p_evap_kPa_logT": 159.7,
+          "p_cond_kPa_Antoine": 5594.7,
+          "p_evap_kPa_Antoine": 274.3,
+          "n_cfhe": 4,
+          "cfhe_eta": 0.9919,
+          "sensible_over_latent": 3.996,
+          "useful_frac": 0.9676,
+          "mol_tick_feed": 7.1839,
+          "q_latent_kj_tick": 3.592,
+          "q_useful_kj_tick": 3.476,
+          "q_useful_kW_SI": 6.951,
+          "q_hx_cond_kj_tick": 6.0,
+          "q_hx_evap_kj_tick": 6.0,
+          "freeze_margin_K": 48.14,
+          "crit_margin_K": 4.85,
+          "stage_bottleneck": "liquid_feed_useful_kj_tick",
+          "stage_limit_kj_tick": 3.476
+        }
+      ],
+      "load_q_kj_tick": 3.476,
+      "load_q_kW_SI": 6.952,
+      "chain_limit_kj_tick": 3.476,
+      "chain_bottleneck_stage": "S2 cryo",
+      "chain_bottleneck_kind": "liquid_feed_useful_kj_tick",
+      "upstream_covers_load": [
+        {
+          "tag": "S1 dump",
+          "limit": 7.5,
+          "covers_load": true
+        },
+        {
+          "tag": "S2 cryo",
+          "limit": 3.476,
+          "covers_load": true
+        }
+      ],
+      "dump_radiators": {
+        "dt_K": 15.0,
+        "q_per_radiator_kj_tick": 0.7875,
+        "q_per_radiator_kW_SI": 1.575,
+        "radiators_needed": 20,
+        "note": "Not the cascade bottleneck: user can add any number on one pipe. Size for the heat the stages actually pump."
+      },
+      "dump_radiators_for_chain_limit": {
+        "dt_K": 15.0,
+        "q_per_radiator_kj_tick": 0.7875,
+        "q_per_radiator_kW_SI": 1.575,
+        "radiators_needed": 5,
+        "note": "Not the cascade bottleneck: user can add any number on one pipe. Size for the heat the stages actually pump."
+      },
+      "ln2_product": {
+        "target_C": -180.0,
+        "target_K": 93.14999999999998,
+        "p_sat_logT_kPa": 190.83,
+        "p_sat_Antoine_kPa": 373.62,
+        "wiki_boil_100kPa_C": -198.1,
+        "how": "Tap LN2 from the N2 condensation chamber liquid output if N2 is a refrigerant stage; otherwise hang a dedicated N2 condenser on the last-stage evaporator HX (H2 coupling gas)."
+      }
+    }
+  },
+  "recommendation": "C_three_stage_X_CH4_N2",
+  "recommendation_why": "Two-stage X+CH4 works but the CH4 evaporator sits near 6 kPa at -185 C (freeze 81.6 K), which starves evaporation rate. Two-stage X+N2 has only ~17 K between X freeze and N2 crit, so HX dT is tight and freeze risk is real. Three-stage X / CH4 / N2 opens both windows, keeps N2 evaporator at a usable tens-of-kPa, and makes the N2 condenser the LN2 tap."
+}

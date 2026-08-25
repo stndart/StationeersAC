@@ -1,0 +1,45 @@
+Stationeers cascade AC  —  +40 C dump  →  -180 C / LN2
+=====================================================
+
+Recommended: 3 stages   Pollutant (X)  →  Methane (CH4)  →  Nitrogen (N2)
+
+                    +40 C ROOM  (≥1 atm)
+                         │
+                         │  convection radiators on ONE gas pipe
+                         │  dump gas X or N2O @ ~300 kPa, pipe ~55 C
+                         ▼
+                 ┌───────────────┐
+                 │ S1 CONDENSER  │  X   ~70 C   ~3.8 MPa
+                 │  (phase chg)  │  HX port ← dump pipe
+                 └───────┬───────┘
+                         │ X vapor (warm)
+                    CFHE x2 (counterflow)
+                         │ X liquid (pre-cooled)
+                 ┌───────▼───────┐
+                 │ S1 EVAPORATOR │  X   ~-93 C  ~1.9 MPa
+                 └───────┬───────┘
+                         │ coupling gas X @ 300 kPa
+                         ▼
+                 ┌───────────────┐
+                 │ S2 CONDENSER  │  CH4  ~-83 C  ~4.7 MPa
+                 └───────┬───────┘
+                    CFHE x2
+                 ┌───────▼───────┐
+                 │ S2 EVAPORATOR │  CH4  ~-145 C
+                 └───────┬───────┘
+                         │ coupling N2 or H2 ≥ 200 kPa
+                         ▼
+                 ┌───────────────┐
+                 │ S3 CONDENSER  │  N2   ~-135 C     << LN2 tap (liquid out)
+                 └───────┬───────┘
+                    CFHE x3
+                 ┌───────▼───────┐
+                 │ S3 EVAPORATOR │  N2   ~-185 C
+                 └───────┬───────┘
+                         │ cold bus: H2 ≥ 150 kPa
+                         ▼
+                    LOAD  -180 C
+              (or extra N2 product condenser)
+
+Bottleneck (1 chamber each): S3 N2 liquid feed 3.39 kJ/tick = 6.78 kW_SI
+Dump radiators: ~5 for LN2-only chain heat, ~13 if S1 is loaded to its own rating.

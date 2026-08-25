@@ -1,0 +1,1355 @@
+{
+  "input": {
+    "t_hot_C": 40,
+    "t_target_C": -180,
+    "dump_radiators": null,
+    "steps": [
+      {
+        "media": "X"
+      },
+      {
+        "media": "CH4"
+      },
+      {
+        "media": "N2"
+      }
+    ]
+  },
+  "output": {
+    "t_hot_C": 40.0,
+    "t_target_C": -180.0,
+    "t_coldest_C": -188.14,
+    "t_floor_if_sacrifice_C": -228.14,
+    "q_at_target_kj_tick": 3.384,
+    "q_at_target_kj_s": 6.768,
+    "dump_radiators": 5,
+    "dump_radiators_locked": false,
+    "bottleneck": {
+      "kind": "cond_HX",
+      "q_kj_tick": 3.384,
+      "lever": "Raise condenser pressure (more dT) if T_crit allows, raise hot-HX loop pressure to >=1 atm, add a condenser chamber, or add dump radiators.",
+      "step": 1
+    },
+    "curve": {
+      "t_evap_K": 85.00999999999999,
+      "t_break_K": 89.52199999999999,
+      "q_plateau_kj_tick": 3.384,
+      "slope_kj_tick_per_K": 0.75,
+      "plateau_limited_by": "upstream",
+      "t_evap_C": -188.14,
+      "t_break_C": -183.628,
+      "samples": [
+        {
+          "t_C": -188.14,
+          "q_kj_tick": 0.0
+        },
+        {
+          "t_C": -178.22086956521738,
+          "q_kj_tick": 3.384
+        },
+        {
+          "t_C": -168.30173913043478,
+          "q_kj_tick": 3.384
+        },
+        {
+          "t_C": -158.38260869565215,
+          "q_kj_tick": 3.384
+        },
+        {
+          "t_C": -148.46347826086955,
+          "q_kj_tick": 3.384
+        },
+        {
+          "t_C": -138.54434782608695,
+          "q_kj_tick": 3.384
+        },
+        {
+          "t_C": -128.62521739130435,
+          "q_kj_tick": 3.384
+        },
+        {
+          "t_C": -118.70608695652174,
+          "q_kj_tick": 3.384
+        },
+        {
+          "t_C": -108.78695652173911,
+          "q_kj_tick": 3.384
+        },
+        {
+          "t_C": -98.86782608695651,
+          "q_kj_tick": 3.384
+        },
+        {
+          "t_C": -88.94869565217391,
+          "q_kj_tick": 3.384
+        },
+        {
+          "t_C": -79.02956521739128,
+          "q_kj_tick": 3.384
+        },
+        {
+          "t_C": -69.1104347826087,
+          "q_kj_tick": 3.384
+        },
+        {
+          "t_C": -59.191304347826076,
+          "q_kj_tick": 3.384
+        },
+        {
+          "t_C": -49.272173913043474,
+          "q_kj_tick": 3.384
+        },
+        {
+          "t_C": -39.35304347826087,
+          "q_kj_tick": 3.384
+        },
+        {
+          "t_C": -29.43391304347827,
+          "q_kj_tick": 3.384
+        },
+        {
+          "t_C": -19.51478260869564,
+          "q_kj_tick": 3.384
+        },
+        {
+          "t_C": -9.595652173913038,
+          "q_kj_tick": 3.384
+        },
+        {
+          "t_C": 0.3234782608695923,
+          "q_kj_tick": 3.384
+        },
+        {
+          "t_C": 10.242608695652166,
+          "q_kj_tick": 3.384
+        },
+        {
+          "t_C": 20.16173913043474,
+          "q_kj_tick": 3.384
+        },
+        {
+          "t_C": 30.080869565217426,
+          "q_kj_tick": 3.384
+        },
+        {
+          "t_C": 40.0,
+          "q_kj_tick": 3.384
+        }
+      ]
+    },
+    "warnings": [
+      {
+        "severity": "soft",
+        "code": "cfhe_span",
+        "message": "c_p*dT/L = 1.90; few CFHEs will eat most of the latent heat.",
+        "step": 0
+      }
+    ],
+    "notes": [
+      "Q(T) is a broken stick: plateau 3.384 kJ/tick until the load approaches T_evap, then linear in (T_cold - T_evap). Not constant down to T_cond.",
+      "Dump radiators: 5 (sized so dump is not the bottleneck at 15 K over room). One radiator ~ 0.787 kJ/tick at 15 K, >=1 atm both sides.",
+      "If you park the last evaporator at freeze+5 K (-228.1 C) you can go colder than the Q-max design, at lower power."
+    ],
+    "steps": [
+      {
+        "media": "X",
+        "t_cond_C": 58.0,
+        "t_evap_C": -94.82999999999998,
+        "p_cond_kPa": 3831.9551386753183,
+        "p_evap_kPa": 1846.3373549584683,
+        "n_cfhe": 1,
+        "n_evap_chambers": 1,
+        "n_cond_chambers": 1,
+        "hx_hot_kPa": 300.0,
+        "hx_cold_kPa": 300.0,
+        "liquid_pipe_L": 100.0,
+        "inventory_mol": null,
+        "t_hot_C": 40.0,
+        "t_cold_C": -87.6620006463649,
+        "q_kj_tick": 5.376,
+        "q_feed": 5.3934,
+        "q_evap_hx": 5.376,
+        "q_cond_hx": 13.5,
+        "useful_frac": 0.4315,
+        "operable": true,
+        "bottleneck": {
+          "kind": "evap_HX",
+          "q_kj_tick": 5.376,
+          "lever": "Lower evaporator pressure (more dT) if freeze allows, raise cold-HX loop pressure to >=1 atm, or add an evaporator chamber.",
+          "step": 0
+        },
+        "locked": {
+          "p_cond_kPa": false,
+          "p_evap_kPa": false,
+          "n_cfhe": false,
+          "inventory_mol": false,
+          "n_evap_chambers": false,
+          "n_cond_chambers": false,
+          "hx_hot_kPa": false,
+          "hx_cold_kPa": false,
+          "liquid_pipe_L": false
+        },
+        "inventory": {
+          "mol_min": 749.06,
+          "mol_max": 2500.0,
+          "note": "Keep about 749-2500 mol of X: >=749 mol holds 20 L in the evaporator plus chamber vapor; <=2500 mol stays under 80% of a 100 L liquid pipe. Inventory does not change Q once 20 L is held.",
+          "chosen_mol": null,
+          "in_band": null
+        },
+        "curve": {
+          "t_evap_K": 178.32,
+          "t_break_K": 185.51120666666665,
+          "q_plateau_kj_tick": 5.393405,
+          "slope_kj_tick_per_K": 0.75,
+          "plateau_limited_by": "liquid_feed",
+          "t_evap_C": -94.82999999999998,
+          "t_break_C": -87.63879333333333,
+          "samples": [
+            {
+              "t_C": -94.82999999999998,
+              "q_kj_tick": 0.0
+            },
+            {
+              "t_C": -88.9678260869565,
+              "q_kj_tick": 4.3966
+            },
+            {
+              "t_C": -83.10565217391303,
+              "q_kj_tick": 5.3934
+            },
+            {
+              "t_C": -77.24347826086955,
+              "q_kj_tick": 5.3934
+            },
+            {
+              "t_C": -71.38130434782607,
+              "q_kj_tick": 5.3934
+            },
+            {
+              "t_C": -65.5191304347826,
+              "q_kj_tick": 5.3934
+            },
+            {
+              "t_C": -59.65695652173912,
+              "q_kj_tick": 5.3934
+            },
+            {
+              "t_C": -53.79478260869564,
+              "q_kj_tick": 5.3934
+            },
+            {
+              "t_C": -47.93260869565216,
+              "q_kj_tick": 5.3934
+            },
+            {
+              "t_C": -42.070434782608686,
+              "q_kj_tick": 5.3934
+            },
+            {
+              "t_C": -36.20826086956521,
+              "q_kj_tick": 5.3934
+            },
+            {
+              "t_C": -30.34608695652173,
+              "q_kj_tick": 5.3934
+            },
+            {
+              "t_C": -24.483913043478253,
+              "q_kj_tick": 5.3934
+            },
+            {
+              "t_C": -18.621739130434776,
+              "q_kj_tick": 5.3934
+            },
+            {
+              "t_C": -12.759565217391298,
+              "q_kj_tick": 5.3934
+            },
+            {
+              "t_C": -6.8973913043478206,
+              "q_kj_tick": 5.3934
+            },
+            {
+              "t_C": -1.035217391304343,
+              "q_kj_tick": 5.3934
+            },
+            {
+              "t_C": 4.826956521739135,
+              "q_kj_tick": 5.3934
+            },
+            {
+              "t_C": 10.689130434782612,
+              "q_kj_tick": 5.3934
+            },
+            {
+              "t_C": 16.55130434782609,
+              "q_kj_tick": 5.3934
+            },
+            {
+              "t_C": 22.413478260869567,
+              "q_kj_tick": 5.3934
+            },
+            {
+              "t_C": 28.275652173913045,
+              "q_kj_tick": 5.3934
+            },
+            {
+              "t_C": 34.13782608695652,
+              "q_kj_tick": 5.3934
+            },
+            {
+              "t_C": 40.0,
+              "q_kj_tick": 5.3934
+            }
+          ]
+        },
+        "warnings": [
+          {
+            "severity": "soft",
+            "code": "cfhe_span",
+            "message": "c_p*dT/L = 1.90; few CFHEs will eat most of the latent heat.",
+            "step": 0
+          }
+        ]
+      },
+      {
+        "media": "CH4",
+        "t_cond_C": -83.14999999999998,
+        "t_evap_C": -102.54999999999998,
+        "p_cond_kPa": 4688.497677158488,
+        "p_evap_kPa": 1800.6015919969277,
+        "n_cfhe": 6,
+        "n_evap_chambers": 1,
+        "n_cond_chambers": 1,
+        "hx_hot_kPa": 300.0,
+        "hx_cold_kPa": 300.0,
+        "liquid_pipe_L": 100.0,
+        "inventory_mol": null,
+        "t_hot_C": -87.6620006463649,
+        "t_cold_C": -92.6620006463649,
+        "q_kj_tick": 3.384,
+        "q_feed": 6.2482,
+        "q_evap_hx": 7.416,
+        "q_cond_hx": 3.384,
+        "useful_frac": 0.9997,
+        "operable": true,
+        "bottleneck": {
+          "kind": "cond_HX",
+          "q_kj_tick": 3.384,
+          "lever": "Raise condenser pressure (more dT) if T_crit allows, raise hot-HX loop pressure to >=1 atm, add a condenser chamber, or add dump radiators.",
+          "step": 1
+        },
+        "locked": {
+          "p_cond_kPa": false,
+          "p_evap_kPa": false,
+          "n_cfhe": false,
+          "inventory_mol": false,
+          "n_evap_chambers": false,
+          "n_cond_chambers": false,
+          "hx_hot_kPa": false,
+          "hx_cold_kPa": false,
+          "liquid_pipe_L": false
+        },
+        "inventory": {
+          "mol_min": 753.88,
+          "mol_max": 2500.0,
+          "note": "Keep about 754-2500 mol of CH4: >=754 mol holds 20 L in the evaporator plus chamber vapor; <=2500 mol stays under 80% of a 100 L liquid pipe. Inventory does not change Q once 20 L is held.",
+          "chosen_mol": null,
+          "in_band": null
+        },
+        "curve": {
+          "t_evap_K": 170.6,
+          "t_break_K": 175.11200064636492,
+          "q_plateau_kj_tick": 3.3840004847736935,
+          "slope_kj_tick_per_K": 0.75,
+          "plateau_limited_by": "cond_HX",
+          "t_evap_C": -102.54999999999998,
+          "t_break_C": -98.03799935363506,
+          "samples": [
+            {
+              "t_C": -102.54999999999998,
+              "q_kj_tick": 0.0
+            },
+            {
+              "t_C": -96.35217391304346,
+              "q_kj_tick": 3.384
+            },
+            {
+              "t_C": -90.15434782608693,
+              "q_kj_tick": 3.384
+            },
+            {
+              "t_C": -83.95652173913041,
+              "q_kj_tick": 3.384
+            },
+            {
+              "t_C": -77.75869565217391,
+              "q_kj_tick": 3.384
+            },
+            {
+              "t_C": -71.56086956521739,
+              "q_kj_tick": 3.384
+            },
+            {
+              "t_C": -65.36304347826086,
+              "q_kj_tick": 3.384
+            },
+            {
+              "t_C": -59.16521739130434,
+              "q_kj_tick": 3.384
+            },
+            {
+              "t_C": -52.967391304347814,
+              "q_kj_tick": 3.384
+            },
+            {
+              "t_C": -46.76956521739129,
+              "q_kj_tick": 3.384
+            },
+            {
+              "t_C": -40.571739130434764,
+              "q_kj_tick": 3.384
+            },
+            {
+              "t_C": -34.37391304347824,
+              "q_kj_tick": 3.384
+            },
+            {
+              "t_C": -28.176086956521715,
+              "q_kj_tick": 3.384
+            },
+            {
+              "t_C": -21.97826086956519,
+              "q_kj_tick": 3.384
+            },
+            {
+              "t_C": -15.780434782608666,
+              "q_kj_tick": 3.384
+            },
+            {
+              "t_C": -9.582608695652198,
+              "q_kj_tick": 3.384
+            },
+            {
+              "t_C": -3.384782608695673,
+              "q_kj_tick": 3.384
+            },
+            {
+              "t_C": 2.8130434782608518,
+              "q_kj_tick": 3.384
+            },
+            {
+              "t_C": 9.010869565217376,
+              "q_kj_tick": 3.384
+            },
+            {
+              "t_C": 15.208695652173901,
+              "q_kj_tick": 3.384
+            },
+            {
+              "t_C": 21.406521739130426,
+              "q_kj_tick": 3.384
+            },
+            {
+              "t_C": 27.60434782608695,
+              "q_kj_tick": 3.384
+            },
+            {
+              "t_C": 33.802173913043475,
+              "q_kj_tick": 3.384
+            },
+            {
+              "t_C": 40.0,
+              "q_kj_tick": 3.384
+            }
+          ]
+        },
+        "warnings": []
+      },
+      {
+        "media": "N2",
+        "t_cond_C": -88.14999999999998,
+        "t_evap_C": -188.14,
+        "p_cond_kPa": 5021.5793122592695,
+        "p_evap_kPa": 142.81586995688247,
+        "n_cfhe": 6,
+        "n_evap_chambers": 1,
+        "n_cond_chambers": 1,
+        "hx_hot_kPa": 300.0,
+        "hx_cold_kPa": 300.0,
+        "liquid_pipe_L": 100.0,
+        "inventory_mol": null,
+        "t_hot_C": -92.6620006463649,
+        "t_cold_C": -180.0,
+        "q_kj_tick": 3.384,
+        "q_feed": 3.5812,
+        "q_evap_hx": 6.105,
+        "q_cond_hx": 3.384,
+        "useful_frac": 0.997,
+        "operable": true,
+        "bottleneck": {
+          "kind": "cond_HX",
+          "q_kj_tick": 3.384,
+          "lever": "Raise condenser pressure (more dT) if T_crit allows, raise hot-HX loop pressure to >=1 atm, add a condenser chamber, or add dump radiators.",
+          "step": 2
+        },
+        "locked": {
+          "p_cond_kPa": false,
+          "p_evap_kPa": false,
+          "n_cfhe": false,
+          "inventory_mol": false,
+          "n_evap_chambers": false,
+          "n_cond_chambers": false,
+          "hx_hot_kPa": false,
+          "hx_cold_kPa": false,
+          "liquid_pipe_L": false
+        },
+        "inventory": {
+          "mol_min": 615.12,
+          "mol_max": 2873.56,
+          "note": "Keep about 615-2874 mol of N2: >=615 mol holds 20 L in the evaporator plus chamber vapor; <=2874 mol stays under 80% of a 100 L liquid pipe. Inventory does not change Q once 20 L is held.",
+          "chosen_mol": null,
+          "in_band": null
+        },
+        "curve": {
+          "t_evap_K": 85.00999999999999,
+          "t_break_K": 89.52200064636492,
+          "q_plateau_kj_tick": 3.3840004847736935,
+          "slope_kj_tick_per_K": 0.75,
+          "plateau_limited_by": "cond_HX",
+          "t_evap_C": -188.14,
+          "t_break_C": -183.62799935363506,
+          "samples": [
+            {
+              "t_C": -188.14,
+              "q_kj_tick": 0.0
+            },
+            {
+              "t_C": -178.22086956521738,
+              "q_kj_tick": 3.384
+            },
+            {
+              "t_C": -168.30173913043478,
+              "q_kj_tick": 3.384
+            },
+            {
+              "t_C": -158.38260869565215,
+              "q_kj_tick": 3.384
+            },
+            {
+              "t_C": -148.46347826086955,
+              "q_kj_tick": 3.384
+            },
+            {
+              "t_C": -138.54434782608695,
+              "q_kj_tick": 3.384
+            },
+            {
+              "t_C": -128.62521739130435,
+              "q_kj_tick": 3.384
+            },
+            {
+              "t_C": -118.70608695652174,
+              "q_kj_tick": 3.384
+            },
+            {
+              "t_C": -108.78695652173911,
+              "q_kj_tick": 3.384
+            },
+            {
+              "t_C": -98.86782608695651,
+              "q_kj_tick": 3.384
+            },
+            {
+              "t_C": -88.94869565217391,
+              "q_kj_tick": 3.384
+            },
+            {
+              "t_C": -79.02956521739128,
+              "q_kj_tick": 3.384
+            },
+            {
+              "t_C": -69.1104347826087,
+              "q_kj_tick": 3.384
+            },
+            {
+              "t_C": -59.191304347826076,
+              "q_kj_tick": 3.384
+            },
+            {
+              "t_C": -49.272173913043474,
+              "q_kj_tick": 3.384
+            },
+            {
+              "t_C": -39.35304347826087,
+              "q_kj_tick": 3.384
+            },
+            {
+              "t_C": -29.43391304347827,
+              "q_kj_tick": 3.384
+            },
+            {
+              "t_C": -19.51478260869564,
+              "q_kj_tick": 3.384
+            },
+            {
+              "t_C": -9.595652173913038,
+              "q_kj_tick": 3.384
+            },
+            {
+              "t_C": 0.3234782608695923,
+              "q_kj_tick": 3.384
+            },
+            {
+              "t_C": 10.242608695652166,
+              "q_kj_tick": 3.384
+            },
+            {
+              "t_C": 20.16173913043474,
+              "q_kj_tick": 3.384
+            },
+            {
+              "t_C": 30.080869565217426,
+              "q_kj_tick": 3.384
+            },
+            {
+              "t_C": 40.0,
+              "q_kj_tick": 3.384
+            }
+          ]
+        },
+        "warnings": []
+      }
+    ],
+    "plant": {
+      "dump": {
+        "t_room_C": 40.0,
+        "t_pipe_C": 55.0,
+        "dt_K": 15.0,
+        "p_kPa": 300.0,
+        "radiators": 5,
+        "radiators_locked": false,
+        "media": {
+          "symbol": "X",
+          "name": "Pollutant",
+          "ok": true,
+          "reason": "X stays vapor at 55 C / 300 kPa",
+          "candidates": [
+            {
+              "symbol": "X",
+              "name": "Pollutant",
+              "ok": true
+            }
+          ]
+        }
+      },
+      "stages": [
+        {
+          "index": 0,
+          "media": "X",
+          "name": "Pollutant",
+          "operable": true,
+          "q_kj_tick": 5.376,
+          "bottleneck": {
+            "kind": "evap_HX",
+            "q_kj_tick": 5.376,
+            "lever": "Lower evaporator pressure (more dT) if freeze allows, raise cold-HX loop pressure to >=1 atm, or add an evaporator chamber.",
+            "step": 0
+          },
+          "condenser": {
+            "t_C": 58.0,
+            "p_kPa": 3832.0,
+            "n_chambers": 1,
+            "hx_loop_kPa": 300.0
+          },
+          "evaporator": {
+            "t_C": -94.83,
+            "p_kPa": 1846.3,
+            "n_chambers": 1,
+            "hx_loop_kPa": 300.0,
+            "liquid_reg_L": 20.0,
+            "feed_L_tick": 0.25
+          },
+          "cfhe": {
+            "n": 1,
+            "eta": 0.7,
+            "mol_tick": 6.25,
+            "liquid_L_tick": 0.25,
+            "gas_L_tick": 5.019
+          },
+          "inventory": {
+            "mol_min": 749.06,
+            "mol_max": 2500.0,
+            "chosen_mol": null,
+            "in_band": null,
+            "note": "Keep about 749-2500 mol of X: >=749 mol holds 20 L in the evaporator plus chamber vapor; <=2500 mol stays under 80% of a 100 L liquid pipe. Inventory does not change Q once 20 L is held.",
+            "liquid_pipe_L": 100.0
+          },
+          "ports": {
+            "t_hot_C": 40.0,
+            "t_cold_C": -87.66
+          },
+          "coupling_out": {
+            "t_C": -87.66,
+            "p_kPa": 300.0,
+            "media": {
+              "symbol": "H2",
+              "name": "Hydrogen",
+              "ok": true,
+              "reason": "H2 stays vapor at -88 C / 300 kPa",
+              "candidates": [
+                {
+                  "symbol": "H2",
+                  "name": "Hydrogen",
+                  "ok": true
+                }
+              ]
+            }
+          },
+          "valves": [
+            {
+              "id": "s0-cond-p",
+              "step": 0,
+              "role": "cond_pressure",
+              "device": "Condensation Chamber",
+              "setting": 3832.0,
+              "unit": "kPa",
+              "note": "In-game pressure setting. T_sat ≈ 58.0 C. x1 chamber(s)."
+            },
+            {
+              "id": "s0-evap-liq",
+              "step": 0,
+              "role": "evap_liquid_reg",
+              "device": "Evaporation Chamber liquid volume regulator",
+              "setting": 20.0,
+              "unit": "L",
+              "note": "Hold 20 L. Internal feed 0.25 L/tick (1 x 0.25 L/tick)."
+            },
+            {
+              "id": "s0-evap-bp",
+              "step": 0,
+              "role": "evap_backpressure",
+              "device": "Pressure Regulator (evaporator gas outlet)",
+              "setting": 1846.3,
+              "unit": "kPa",
+              "note": "Holds T_evap ≈ -94.8 C. x1 chamber(s)."
+            },
+            {
+              "id": "s0-liq-pump",
+              "step": 0,
+              "role": "liquid_pump",
+              "device": "Volume Pump (liquid CFHE side)",
+              "setting": 0.25,
+              "unit": "L/tick",
+              "note": "Match chamber liquid feed. 6.250 mol/tick of X."
+            },
+            {
+              "id": "s0-gas-pump",
+              "step": 0,
+              "role": "gas_pump",
+              "device": "Volume Pump (gas CFHE side)",
+              "setting": 5.019,
+              "unit": "L/tick",
+              "note": "Same 6.250 mol/tick at evap -94.8 C / 1846 kPa so CFHE mol-flows match."
+            },
+            {
+              "id": "s0-purge",
+              "step": 0,
+              "role": "purge",
+              "device": "Pressure Relief Valve (liquid line flash purge)",
+              "setting": 6000.0,
+              "unit": "kPa",
+              "note": "Dump flash gas or the liquid pipe hits 6 MPa. Vent to a waste tank."
+            },
+            {
+              "id": "s0-owv-liq",
+              "step": 0,
+              "role": "owv_liquid",
+              "device": "One-Way Valve (liquid)",
+              "setting": "toward evaporator",
+              "unit": "",
+              "note": "Prevents reverse flow through the CFHE liquid path."
+            },
+            {
+              "id": "s0-owv-gas",
+              "step": 0,
+              "role": "owv_gas",
+              "device": "One-Way Valve (gas)",
+              "setting": "toward condenser",
+              "unit": "",
+              "note": "Prevents reverse flow through the CFHE gas path."
+            },
+            {
+              "id": "s0-coupling",
+              "step": 0,
+              "role": "coupling_pr",
+              "device": "Pressure Regulator (cold HX / coupling loop)",
+              "setting": 300.0,
+              "unit": "kPa",
+              "note": "Keep ≥1 atm or chamber HX derates."
+            }
+          ]
+        },
+        {
+          "index": 1,
+          "media": "CH4",
+          "name": "Methane / Volatiles",
+          "operable": true,
+          "q_kj_tick": 3.384,
+          "bottleneck": {
+            "kind": "cond_HX",
+            "q_kj_tick": 3.384,
+            "lever": "Raise condenser pressure (more dT) if T_crit allows, raise hot-HX loop pressure to >=1 atm, add a condenser chamber, or add dump radiators.",
+            "step": 1
+          },
+          "condenser": {
+            "t_C": -83.15,
+            "p_kPa": 4688.5,
+            "n_chambers": 1,
+            "hx_loop_kPa": 300.0
+          },
+          "evaporator": {
+            "t_C": -102.55,
+            "p_kPa": 1800.6,
+            "n_chambers": 1,
+            "hx_loop_kPa": 300.0,
+            "liquid_reg_L": 20.0,
+            "feed_L_tick": 0.25
+          },
+          "cfhe": {
+            "n": 6,
+            "eta": 0.9993,
+            "mol_tick": 6.25,
+            "liquid_L_tick": 0.25,
+            "gas_L_tick": 4.924
+          },
+          "inventory": {
+            "mol_min": 753.88,
+            "mol_max": 2500.0,
+            "chosen_mol": null,
+            "in_band": null,
+            "note": "Keep about 754-2500 mol of CH4: >=754 mol holds 20 L in the evaporator plus chamber vapor; <=2500 mol stays under 80% of a 100 L liquid pipe. Inventory does not change Q once 20 L is held.",
+            "liquid_pipe_L": 100.0
+          },
+          "ports": {
+            "t_hot_C": -87.66,
+            "t_cold_C": -92.66
+          },
+          "coupling_out": {
+            "t_C": -92.66,
+            "p_kPa": 300.0,
+            "media": {
+              "symbol": "H2",
+              "name": "Hydrogen",
+              "ok": true,
+              "reason": "H2 stays vapor at -93 C / 300 kPa",
+              "candidates": [
+                {
+                  "symbol": "H2",
+                  "name": "Hydrogen",
+                  "ok": true
+                }
+              ]
+            }
+          },
+          "valves": [
+            {
+              "id": "s1-cond-p",
+              "step": 1,
+              "role": "cond_pressure",
+              "device": "Condensation Chamber",
+              "setting": 4688.5,
+              "unit": "kPa",
+              "note": "In-game pressure setting. T_sat ≈ -83.1 C. x1 chamber(s)."
+            },
+            {
+              "id": "s1-evap-liq",
+              "step": 1,
+              "role": "evap_liquid_reg",
+              "device": "Evaporation Chamber liquid volume regulator",
+              "setting": 20.0,
+              "unit": "L",
+              "note": "Hold 20 L. Internal feed 0.25 L/tick (1 x 0.25 L/tick)."
+            },
+            {
+              "id": "s1-evap-bp",
+              "step": 1,
+              "role": "evap_backpressure",
+              "device": "Pressure Regulator (evaporator gas outlet)",
+              "setting": 1800.6,
+              "unit": "kPa",
+              "note": "Holds T_evap ≈ -102.5 C. x1 chamber(s)."
+            },
+            {
+              "id": "s1-liq-pump",
+              "step": 1,
+              "role": "liquid_pump",
+              "device": "Volume Pump (liquid CFHE side)",
+              "setting": 0.25,
+              "unit": "L/tick",
+              "note": "Match chamber liquid feed. 6.250 mol/tick of CH4."
+            },
+            {
+              "id": "s1-gas-pump",
+              "step": 1,
+              "role": "gas_pump",
+              "device": "Volume Pump (gas CFHE side)",
+              "setting": 4.924,
+              "unit": "L/tick",
+              "note": "Same 6.250 mol/tick at evap -102.5 C / 1801 kPa so CFHE mol-flows match."
+            },
+            {
+              "id": "s1-purge",
+              "step": 1,
+              "role": "purge",
+              "device": "Pressure Relief Valve (liquid line flash purge)",
+              "setting": 6000.0,
+              "unit": "kPa",
+              "note": "Dump flash gas or the liquid pipe hits 6 MPa. Vent to a waste tank."
+            },
+            {
+              "id": "s1-owv-liq",
+              "step": 1,
+              "role": "owv_liquid",
+              "device": "One-Way Valve (liquid)",
+              "setting": "toward evaporator",
+              "unit": "",
+              "note": "Prevents reverse flow through the CFHE liquid path."
+            },
+            {
+              "id": "s1-owv-gas",
+              "step": 1,
+              "role": "owv_gas",
+              "device": "One-Way Valve (gas)",
+              "setting": "toward condenser",
+              "unit": "",
+              "note": "Prevents reverse flow through the CFHE gas path."
+            },
+            {
+              "id": "s1-coupling",
+              "step": 1,
+              "role": "coupling_pr",
+              "device": "Pressure Regulator (cold HX / coupling loop)",
+              "setting": 300.0,
+              "unit": "kPa",
+              "note": "Keep ≥1 atm or chamber HX derates."
+            }
+          ]
+        },
+        {
+          "index": 2,
+          "media": "N2",
+          "name": "Nitrogen",
+          "operable": true,
+          "q_kj_tick": 3.384,
+          "bottleneck": {
+            "kind": "cond_HX",
+            "q_kj_tick": 3.384,
+            "lever": "Raise condenser pressure (more dT) if T_crit allows, raise hot-HX loop pressure to >=1 atm, add a condenser chamber, or add dump radiators.",
+            "step": 2
+          },
+          "condenser": {
+            "t_C": -88.15,
+            "p_kPa": 5021.6,
+            "n_chambers": 1,
+            "hx_loop_kPa": 300.0
+          },
+          "evaporator": {
+            "t_C": -188.14,
+            "p_kPa": 142.8,
+            "n_chambers": 1,
+            "hx_loop_kPa": 300.0,
+            "liquid_reg_L": 20.0,
+            "feed_L_tick": 0.25
+          },
+          "cfhe": {
+            "n": 6,
+            "eta": 0.9993,
+            "mol_tick": 7.1839,
+            "liquid_L_tick": 0.25,
+            "gas_L_tick": 35.554
+          },
+          "inventory": {
+            "mol_min": 615.12,
+            "mol_max": 2873.56,
+            "chosen_mol": null,
+            "in_band": null,
+            "note": "Keep about 615-2874 mol of N2: >=615 mol holds 20 L in the evaporator plus chamber vapor; <=2874 mol stays under 80% of a 100 L liquid pipe. Inventory does not change Q once 20 L is held.",
+            "liquid_pipe_L": 100.0
+          },
+          "ports": {
+            "t_hot_C": -92.66,
+            "t_cold_C": -180.0
+          },
+          "coupling_out": {
+            "t_C": -180.0,
+            "p_kPa": 300.0,
+            "media": {
+              "symbol": "H2",
+              "name": "Hydrogen",
+              "ok": true,
+              "reason": "H2 stays vapor at -180 C / 300 kPa",
+              "candidates": [
+                {
+                  "symbol": "H2",
+                  "name": "Hydrogen",
+                  "ok": true
+                }
+              ]
+            }
+          },
+          "valves": [
+            {
+              "id": "s2-cond-p",
+              "step": 2,
+              "role": "cond_pressure",
+              "device": "Condensation Chamber",
+              "setting": 5021.6,
+              "unit": "kPa",
+              "note": "In-game pressure setting. T_sat ≈ -88.1 C. x1 chamber(s)."
+            },
+            {
+              "id": "s2-evap-liq",
+              "step": 2,
+              "role": "evap_liquid_reg",
+              "device": "Evaporation Chamber liquid volume regulator",
+              "setting": 20.0,
+              "unit": "L",
+              "note": "Hold 20 L. Internal feed 0.25 L/tick (1 x 0.25 L/tick)."
+            },
+            {
+              "id": "s2-evap-bp",
+              "step": 2,
+              "role": "evap_backpressure",
+              "device": "Pressure Regulator (evaporator gas outlet)",
+              "setting": 142.8,
+              "unit": "kPa",
+              "note": "Holds T_evap ≈ -188.1 C. x1 chamber(s)."
+            },
+            {
+              "id": "s2-liq-pump",
+              "step": 2,
+              "role": "liquid_pump",
+              "device": "Volume Pump (liquid CFHE side)",
+              "setting": 0.25,
+              "unit": "L/tick",
+              "note": "Match chamber liquid feed. 7.184 mol/tick of N2."
+            },
+            {
+              "id": "s2-gas-pump",
+              "step": 2,
+              "role": "gas_pump",
+              "device": "Volume Pump (gas CFHE side)",
+              "setting": 35.554,
+              "unit": "L/tick",
+              "note": "Same 7.184 mol/tick at evap -188.1 C / 143 kPa so CFHE mol-flows match."
+            },
+            {
+              "id": "s2-purge",
+              "step": 2,
+              "role": "purge",
+              "device": "Pressure Relief Valve (liquid line flash purge)",
+              "setting": 6000.0,
+              "unit": "kPa",
+              "note": "Dump flash gas or the liquid pipe hits 6 MPa. Vent to a waste tank."
+            },
+            {
+              "id": "s2-owv-liq",
+              "step": 2,
+              "role": "owv_liquid",
+              "device": "One-Way Valve (liquid)",
+              "setting": "toward evaporator",
+              "unit": "",
+              "note": "Prevents reverse flow through the CFHE liquid path."
+            },
+            {
+              "id": "s2-owv-gas",
+              "step": 2,
+              "role": "owv_gas",
+              "device": "One-Way Valve (gas)",
+              "setting": "toward condenser",
+              "unit": "",
+              "note": "Prevents reverse flow through the CFHE gas path."
+            },
+            {
+              "id": "s2-coupling",
+              "step": 2,
+              "role": "coupling_pr",
+              "device": "Pressure Regulator (cold HX / coupling loop)",
+              "setting": 300.0,
+              "unit": "kPa",
+              "note": "Keep ≥1 atm or chamber HX derates."
+            }
+          ]
+        }
+      ],
+      "load": {
+        "t_C": -180.0
+      },
+      "valves": [
+        {
+          "id": "dump-pr",
+          "step": null,
+          "role": "dump_pr",
+          "device": "Pressure Regulator (dump loop)",
+          "setting": 300.0,
+          "unit": "kPa",
+          "note": "Pipe convection radiators on one gas pipe. Suggested media: X."
+        },
+        {
+          "id": "dump-rad",
+          "step": null,
+          "role": "dump_radiators",
+          "device": "Pipe Convection Radiator",
+          "setting": 5,
+          "unit": "count",
+          "note": "Sized at 15 K over room, pipe >=1 atm both sides. Auto-sized so dump is not the bottleneck."
+        },
+        {
+          "id": "s0-cond-p",
+          "step": 0,
+          "role": "cond_pressure",
+          "device": "Condensation Chamber",
+          "setting": 3832.0,
+          "unit": "kPa",
+          "note": "In-game pressure setting. T_sat ≈ 58.0 C. x1 chamber(s)."
+        },
+        {
+          "id": "s0-evap-liq",
+          "step": 0,
+          "role": "evap_liquid_reg",
+          "device": "Evaporation Chamber liquid volume regulator",
+          "setting": 20.0,
+          "unit": "L",
+          "note": "Hold 20 L. Internal feed 0.25 L/tick (1 x 0.25 L/tick)."
+        },
+        {
+          "id": "s0-evap-bp",
+          "step": 0,
+          "role": "evap_backpressure",
+          "device": "Pressure Regulator (evaporator gas outlet)",
+          "setting": 1846.3,
+          "unit": "kPa",
+          "note": "Holds T_evap ≈ -94.8 C. x1 chamber(s)."
+        },
+        {
+          "id": "s0-liq-pump",
+          "step": 0,
+          "role": "liquid_pump",
+          "device": "Volume Pump (liquid CFHE side)",
+          "setting": 0.25,
+          "unit": "L/tick",
+          "note": "Match chamber liquid feed. 6.250 mol/tick of X."
+        },
+        {
+          "id": "s0-gas-pump",
+          "step": 0,
+          "role": "gas_pump",
+          "device": "Volume Pump (gas CFHE side)",
+          "setting": 5.019,
+          "unit": "L/tick",
+          "note": "Same 6.250 mol/tick at evap -94.8 C / 1846 kPa so CFHE mol-flows match."
+        },
+        {
+          "id": "s0-purge",
+          "step": 0,
+          "role": "purge",
+          "device": "Pressure Relief Valve (liquid line flash purge)",
+          "setting": 6000.0,
+          "unit": "kPa",
+          "note": "Dump flash gas or the liquid pipe hits 6 MPa. Vent to a waste tank."
+        },
+        {
+          "id": "s0-owv-liq",
+          "step": 0,
+          "role": "owv_liquid",
+          "device": "One-Way Valve (liquid)",
+          "setting": "toward evaporator",
+          "unit": "",
+          "note": "Prevents reverse flow through the CFHE liquid path."
+        },
+        {
+          "id": "s0-owv-gas",
+          "step": 0,
+          "role": "owv_gas",
+          "device": "One-Way Valve (gas)",
+          "setting": "toward condenser",
+          "unit": "",
+          "note": "Prevents reverse flow through the CFHE gas path."
+        },
+        {
+          "id": "s0-coupling",
+          "step": 0,
+          "role": "coupling_pr",
+          "device": "Pressure Regulator (cold HX / coupling loop)",
+          "setting": 300.0,
+          "unit": "kPa",
+          "note": "Keep ≥1 atm or chamber HX derates."
+        },
+        {
+          "id": "s1-cond-p",
+          "step": 1,
+          "role": "cond_pressure",
+          "device": "Condensation Chamber",
+          "setting": 4688.5,
+          "unit": "kPa",
+          "note": "In-game pressure setting. T_sat ≈ -83.1 C. x1 chamber(s)."
+        },
+        {
+          "id": "s1-evap-liq",
+          "step": 1,
+          "role": "evap_liquid_reg",
+          "device": "Evaporation Chamber liquid volume regulator",
+          "setting": 20.0,
+          "unit": "L",
+          "note": "Hold 20 L. Internal feed 0.25 L/tick (1 x 0.25 L/tick)."
+        },
+        {
+          "id": "s1-evap-bp",
+          "step": 1,
+          "role": "evap_backpressure",
+          "device": "Pressure Regulator (evaporator gas outlet)",
+          "setting": 1800.6,
+          "unit": "kPa",
+          "note": "Holds T_evap ≈ -102.5 C. x1 chamber(s)."
+        },
+        {
+          "id": "s1-liq-pump",
+          "step": 1,
+          "role": "liquid_pump",
+          "device": "Volume Pump (liquid CFHE side)",
+          "setting": 0.25,
+          "unit": "L/tick",
+          "note": "Match chamber liquid feed. 6.250 mol/tick of CH4."
+        },
+        {
+          "id": "s1-gas-pump",
+          "step": 1,
+          "role": "gas_pump",
+          "device": "Volume Pump (gas CFHE side)",
+          "setting": 4.924,
+          "unit": "L/tick",
+          "note": "Same 6.250 mol/tick at evap -102.5 C / 1801 kPa so CFHE mol-flows match."
+        },
+        {
+          "id": "s1-purge",
+          "step": 1,
+          "role": "purge",
+          "device": "Pressure Relief Valve (liquid line flash purge)",
+          "setting": 6000.0,
+          "unit": "kPa",
+          "note": "Dump flash gas or the liquid pipe hits 6 MPa. Vent to a waste tank."
+        },
+        {
+          "id": "s1-owv-liq",
+          "step": 1,
+          "role": "owv_liquid",
+          "device": "One-Way Valve (liquid)",
+          "setting": "toward evaporator",
+          "unit": "",
+          "note": "Prevents reverse flow through the CFHE liquid path."
+        },
+        {
+          "id": "s1-owv-gas",
+          "step": 1,
+          "role": "owv_gas",
+          "device": "One-Way Valve (gas)",
+          "setting": "toward condenser",
+          "unit": "",
+          "note": "Prevents reverse flow through the CFHE gas path."
+        },
+        {
+          "id": "s1-coupling",
+          "step": 1,
+          "role": "coupling_pr",
+          "device": "Pressure Regulator (cold HX / coupling loop)",
+          "setting": 300.0,
+          "unit": "kPa",
+          "note": "Keep ≥1 atm or chamber HX derates."
+        },
+        {
+          "id": "s2-cond-p",
+          "step": 2,
+          "role": "cond_pressure",
+          "device": "Condensation Chamber",
+          "setting": 5021.6,
+          "unit": "kPa",
+          "note": "In-game pressure setting. T_sat ≈ -88.1 C. x1 chamber(s)."
+        },
+        {
+          "id": "s2-evap-liq",
+          "step": 2,
+          "role": "evap_liquid_reg",
+          "device": "Evaporation Chamber liquid volume regulator",
+          "setting": 20.0,
+          "unit": "L",
+          "note": "Hold 20 L. Internal feed 0.25 L/tick (1 x 0.25 L/tick)."
+        },
+        {
+          "id": "s2-evap-bp",
+          "step": 2,
+          "role": "evap_backpressure",
+          "device": "Pressure Regulator (evaporator gas outlet)",
+          "setting": 142.8,
+          "unit": "kPa",
+          "note": "Holds T_evap ≈ -188.1 C. x1 chamber(s)."
+        },
+        {
+          "id": "s2-liq-pump",
+          "step": 2,
+          "role": "liquid_pump",
+          "device": "Volume Pump (liquid CFHE side)",
+          "setting": 0.25,
+          "unit": "L/tick",
+          "note": "Match chamber liquid feed. 7.184 mol/tick of N2."
+        },
+        {
+          "id": "s2-gas-pump",
+          "step": 2,
+          "role": "gas_pump",
+          "device": "Volume Pump (gas CFHE side)",
+          "setting": 35.554,
+          "unit": "L/tick",
+          "note": "Same 7.184 mol/tick at evap -188.1 C / 143 kPa so CFHE mol-flows match."
+        },
+        {
+          "id": "s2-purge",
+          "step": 2,
+          "role": "purge",
+          "device": "Pressure Relief Valve (liquid line flash purge)",
+          "setting": 6000.0,
+          "unit": "kPa",
+          "note": "Dump flash gas or the liquid pipe hits 6 MPa. Vent to a waste tank."
+        },
+        {
+          "id": "s2-owv-liq",
+          "step": 2,
+          "role": "owv_liquid",
+          "device": "One-Way Valve (liquid)",
+          "setting": "toward evaporator",
+          "unit": "",
+          "note": "Prevents reverse flow through the CFHE liquid path."
+        },
+        {
+          "id": "s2-owv-gas",
+          "step": 2,
+          "role": "owv_gas",
+          "device": "One-Way Valve (gas)",
+          "setting": "toward condenser",
+          "unit": "",
+          "note": "Prevents reverse flow through the CFHE gas path."
+        },
+        {
+          "id": "s2-coupling",
+          "step": 2,
+          "role": "coupling_pr",
+          "device": "Pressure Regulator (cold HX / coupling loop)",
+          "setting": 300.0,
+          "unit": "kPa",
+          "note": "Keep ≥1 atm or chamber HX derates."
+        }
+      ],
+      "ascii": "Stationeers cascade  --  end setup (devices + valves)\n========================================================\nDump 40.0 C room  ->  load -180.0 C\n\n  [40 C ROOM]\n       |  dump PR 300 kPa   gas X\n       |  convection radiators x5  (pipe ~55 C, dT 15 K)\n       v\n  [ S0 CONDENSER  X     58.0 C  3832 kPa  x1 ]\n       |  Condensation Chamber pressure = 3832 kPa\n       |  vapor -> CFHE x1 (eta 0.70)\n       |  gas VP 5.019 L/tick   liquid VP 0.250 L/tick\n       |  OWV gas->cond / OWV liquid->evap   purge <= 6000 kPa\n       v\n  [ S0 EVAPORATOR X     -94.8 C  1846 kPa  x1 ]\n       |  liquid vol reg 20 L, feed 0.25 L/tick\n       |  evap gas PR 1846 kPa\n       |  coupling PR 300 kPa  @ -87.7 C   gas H2\n       v\n  [ S1 CONDENSER  CH4   -83.2 C  4688 kPa  x1 ]\n       |  Condensation Chamber pressure = 4688 kPa\n       |  vapor -> CFHE x6 (eta 1.00)\n       |  gas VP 4.924 L/tick   liquid VP 0.250 L/tick\n       |  OWV gas->cond / OWV liquid->evap   purge <= 6000 kPa\n       v\n  [ S1 EVAPORATOR CH4   -102.5 C  1801 kPa  x1 ]\n       |  liquid vol reg 20 L, feed 0.25 L/tick\n       |  evap gas PR 1801 kPa\n       |  coupling PR 300 kPa  @ -92.7 C   gas H2\n       v\n  [ S2 CONDENSER  N2    -88.2 C  5022 kPa  x1 ]\n       |  Condensation Chamber pressure = 5022 kPa\n       |  vapor -> CFHE x6 (eta 1.00)\n       |  gas VP 35.554 L/tick   liquid VP 0.250 L/tick\n       |  OWV gas->cond / OWV liquid->evap   purge <= 6000 kPa\n       v\n  [ S2 EVAPORATOR N2    -188.1 C  143 kPa  x1 ]\n       |  liquid vol reg 20 L, feed 0.25 L/tick\n       |  evap gas PR 143 kPa\n       |  coupling PR 300 kPa  @ -180.0 C   gas H2\n       v\n  [ LOAD  -180.0 C ]\n\nValve list:\n  - Pressure Regulator (dump loop): 300.0 kPa\n      Pipe convection radiators on one gas pipe. Suggested media: X.\n  - Pipe Convection Radiator: 5 count\n      Sized at 15 K over room, pipe >=1 atm both sides. Auto-sized so dump is not the bottleneck.\n  - S0 Condensation Chamber: 3832.0 kPa\n      In-game pressure setting. T_sat ≈ 58.0 C. x1 chamber(s).\n  - S0 Evaporation Chamber liquid volume regulator: 20.0 L\n      Hold 20 L. Internal feed 0.25 L/tick (1 x 0.25 L/tick).\n  - S0 Pressure Regulator (evaporator gas outlet): 1846.3 kPa\n      Holds T_evap ≈ -94.8 C. x1 chamber(s).\n  - S0 Volume Pump (liquid CFHE side): 0.25 L/tick\n      Match chamber liquid feed. 6.250 mol/tick of X.\n  - S0 Volume Pump (gas CFHE side): 5.019 L/tick\n      Same 6.250 mol/tick at evap -94.8 C / 1846 kPa so CFHE mol-flows match.\n  - S0 Pressure Relief Valve (liquid line flash purge): 6000.0 kPa\n      Dump flash gas or the liquid pipe hits 6 MPa. Vent to a waste tank.\n  - S0 One-Way Valve (liquid): toward evaporator\n      Prevents reverse flow through the CFHE liquid path.\n  - S0 One-Way Valve (gas): toward condenser\n      Prevents reverse flow through the CFHE gas path.\n  - S0 Pressure Regulator (cold HX / coupling loop): 300.0 kPa\n      Keep ≥1 atm or chamber HX derates.\n  - S1 Condensation Chamber: 4688.5 kPa\n      In-game pressure setting. T_sat ≈ -83.1 C. x1 chamber(s).\n  - S1 Evaporation Chamber liquid volume regulator: 20.0 L\n      Hold 20 L. Internal feed 0.25 L/tick (1 x 0.25 L/tick).\n  - S1 Pressure Regulator (evaporator gas outlet): 1800.6 kPa\n      Holds T_evap ≈ -102.5 C. x1 chamber(s).\n  - S1 Volume Pump (liquid CFHE side): 0.25 L/tick\n      Match chamber liquid feed. 6.250 mol/tick of CH4.\n  - S1 Volume Pump (gas CFHE side): 4.924 L/tick\n      Same 6.250 mol/tick at evap -102.5 C / 1801 kPa so CFHE mol-flows match.\n  - S1 Pressure Relief Valve (liquid line flash purge): 6000.0 kPa\n      Dump flash gas or the liquid pipe hits 6 MPa. Vent to a waste tank.\n  - S1 One-Way Valve (liquid): toward evaporator\n      Prevents reverse flow through the CFHE liquid path.\n  - S1 One-Way Valve (gas): toward condenser\n      Prevents reverse flow through the CFHE gas path.\n  - S1 Pressure Regulator (cold HX / coupling loop): 300.0 kPa\n      Keep ≥1 atm or chamber HX derates.\n  - S2 Condensation Chamber: 5021.6 kPa\n      In-game pressure setting. T_sat ≈ -88.1 C. x1 chamber(s).\n  - S2 Evaporation Chamber liquid volume regulator: 20.0 L\n      Hold 20 L. Internal feed 0.25 L/tick (1 x 0.25 L/tick).\n  - S2 Pressure Regulator (evaporator gas outlet): 142.8 kPa\n      Holds T_evap ≈ -188.1 C. x1 chamber(s).\n  - S2 Volume Pump (liquid CFHE side): 0.25 L/tick\n      Match chamber liquid feed. 7.184 mol/tick of N2.\n  - S2 Volume Pump (gas CFHE side): 35.554 L/tick\n      Same 7.184 mol/tick at evap -188.1 C / 143 kPa so CFHE mol-flows match.\n  - S2 Pressure Relief Valve (liquid line flash purge): 6000.0 kPa\n      Dump flash gas or the liquid pipe hits 6 MPa. Vent to a waste tank.\n  - S2 One-Way Valve (liquid): toward evaporator\n      Prevents reverse flow through the CFHE liquid path.\n  - S2 One-Way Valve (gas): toward condenser\n      Prevents reverse flow through the CFHE gas path.\n  - S2 Pressure Regulator (cold HX / coupling loop): 300.0 kPa\n      Keep ≥1 atm or chamber HX derates.\n"
+    }
+  }
+}

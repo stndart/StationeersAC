@@ -1,0 +1,187 @@
+{
+  "gases": [
+    {
+      "symbol": "N2",
+      "name": "Nitrogen",
+      "can_refrigerate": true,
+      "t_freeze_C": -233.14,
+      "t_crit_C": -83.15,
+      "notes": "Wiki table + chart."
+    },
+    {
+      "symbol": "O2",
+      "name": "Oxygen",
+      "can_refrigerate": true,
+      "t_freeze_C": -216.73,
+      "t_crit_C": -110.95,
+      "notes": "Wiki table. Chart extra: 81 K / 250 kPa."
+    },
+    {
+      "symbol": "CH4",
+      "name": "Methane / Volatiles",
+      "can_refrigerate": true,
+      "t_freeze_C": -191.55,
+      "t_crit_C": -78.15,
+      "notes": "Chart CH4 matches old Volatiles phase data."
+    },
+    {
+      "symbol": "H2",
+      "name": "Hydrogen",
+      "can_refrigerate": false,
+      "t_freeze_C": -258.15,
+      "t_crit_C": -203.15,
+      "notes": "Chart 2026-04-19. Coupling gas / LH2; not a -180 C refrigerant."
+    },
+    {
+      "symbol": "X",
+      "name": "Pollutant",
+      "can_refrigerate": true,
+      "t_freeze_C": -99.83,
+      "t_crit_C": 151.85,
+      "notes": "Min condensation 1.8 MPa at freeze. Typical stage-1 media."
+    },
+    {
+      "symbol": "CO2",
+      "name": "Carbon Dioxide",
+      "can_refrigerate": true,
+      "t_freeze_C": -55.33,
+      "t_crit_C": -8.15,
+      "notes": "T_crit -8 C: cannot dump at +40 C."
+    },
+    {
+      "symbol": "N2O",
+      "name": "Nitrous Oxide",
+      "can_refrigerate": true,
+      "t_freeze_C": -21.05,
+      "t_crit_C": 157.45,
+      "notes": "Dumps at +40 C but freeze -21 C."
+    },
+    {
+      "symbol": "H2O",
+      "name": "Water",
+      "can_refrigerate": true,
+      "t_freeze_C": 0.0,
+      "t_crit_C": 369.85,
+      "notes": "Freezes at 0 C."
+    },
+    {
+      "symbol": "Sil",
+      "name": "Silanol",
+      "can_refrigerate": true,
+      "t_freeze_C": -109.15,
+      "t_crit_C": 548.52,
+      "notes": "Late-game stage-1. Missing SHC — CFHE parasitic assumed 0."
+    },
+    {
+      "symbol": "ALC",
+      "name": "Alcohol",
+      "can_refrigerate": false,
+      "t_freeze_C": -41.15,
+      "t_crit_C": 150.85,
+      "notes": "Chart only. Missing L / V_liq / SHC."
+    },
+    {
+      "symbol": "HCl",
+      "name": "Hydrochloric Acid",
+      "can_refrigerate": false,
+      "t_freeze_C": -26.15,
+      "t_crit_C": 157.85,
+      "notes": "Chart only. Missing L / V_liq / SHC."
+    },
+    {
+      "symbol": "O3",
+      "name": "Ozone",
+      "can_refrigerate": false,
+      "t_freeze_C": null,
+      "t_crit_C": 30.85,
+      "notes": "T_crit 31 C. Cannot dump at +40 C."
+    },
+    {
+      "symbol": "N2H4",
+      "name": "Hydrazine / Fuel",
+      "can_refrigerate": false,
+      "t_freeze_C": null,
+      "t_crit_C": 247.85,
+      "notes": "Hypergolic / toxic — do not use as AC media."
+    }
+  ],
+  "lockable_fields": [
+    {
+      "key": "p_cond_kPa",
+      "label": "Condenser pressure",
+      "type": "float",
+      "unit": "kPa"
+    },
+    {
+      "key": "p_evap_kPa",
+      "label": "Evaporator pressure",
+      "type": "float",
+      "unit": "kPa"
+    },
+    {
+      "key": "n_cfhe",
+      "label": "CFHE count",
+      "type": "int",
+      "unit": ""
+    },
+    {
+      "key": "inventory_mol",
+      "label": "Inventory",
+      "type": "float",
+      "unit": "mol"
+    },
+    {
+      "key": "n_evap_chambers",
+      "label": "Evaporator chambers",
+      "type": "int",
+      "unit": ""
+    },
+    {
+      "key": "n_cond_chambers",
+      "label": "Condenser chambers",
+      "type": "int",
+      "unit": ""
+    },
+    {
+      "key": "hx_hot_kPa",
+      "label": "Hot HX loop pressure",
+      "type": "float",
+      "unit": "kPa"
+    },
+    {
+      "key": "hx_cold_kPa",
+      "label": "Cold HX loop pressure",
+      "type": "float",
+      "unit": "kPa"
+    },
+    {
+      "key": "liquid_pipe_L",
+      "label": "Liquid pipe volume",
+      "type": "float",
+      "unit": "L"
+    }
+  ],
+  "defaults": {
+    "max_cfhe": 6,
+    "dump_p_kPa": 300.0,
+    "hx_loop_kPa": 300.0,
+    "evap_target_L": 20.0,
+    "liquid_feed_L_per_tick": 0.25,
+    "liquid_pipe_L": 100.0,
+    "dump_rad_dt_K": 15.0,
+    "p_max_liquid_kPa": 6000.0,
+    "t_hot_C": 40.0,
+    "t_target_C": -180.0,
+    "preset_steps": [
+      {
+        "media": "X"
+      },
+      {
+        "media": "CH4"
+      },
+      {
+        "media": "N2"
+      }
+    ]
+  }
+}
