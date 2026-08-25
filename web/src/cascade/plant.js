@@ -12,7 +12,7 @@ import { round } from "./models.js";
 import { c_from_k, cfhe_eta, gas_volume_L_per_tick } from "./physics.js";
 
 export const DUMP_CANDIDATES = ["X", "N2O"];
-export const COUPLING_CANDIDATES = ["H2", "X", "N2O", "N2", "CH4", "O2"];
+export const COUPLING_CANDIDATES = ["He", "H2", "X", "N2O", "N2", "CH4", "O2"];
 
 function r(x, nd = 3) {
   return round(Number(x), nd);
@@ -24,6 +24,7 @@ function valve(vid, step, role, device, setting, unit, note) {
 
 export function stays_vapor(gas, t_K, p_kPa, margin = 1.2) {
   if (t_K <= 0 || p_kPa <= 0) return false;
+  if (gas.t_crit == null && gas.t_freeze == null) return true;
   if (gas.t_crit != null && t_K >= gas.t_crit) return true;
   if (gas.t_freeze != null && t_K < gas.t_freeze) return false;
   try {

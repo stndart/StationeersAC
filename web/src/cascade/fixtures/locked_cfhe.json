@@ -694,14 +694,14 @@
             "t_C": -87.66,
             "p_kPa": 300.0,
             "media": {
-              "symbol": "H2",
-              "name": "Hydrogen",
+              "symbol": "He",
+              "name": "Helium",
               "ok": true,
-              "reason": "H2 stays vapor at -88 C / 300 kPa",
+              "reason": "He stays vapor at -88 C / 300 kPa",
               "candidates": [
                 {
-                  "symbol": "H2",
-                  "name": "Hydrogen",
+                  "symbol": "He",
+                  "name": "Helium",
                   "ok": true
                 }
               ]
@@ -840,14 +840,14 @@
             "t_C": -92.66,
             "p_kPa": 300.0,
             "media": {
-              "symbol": "H2",
-              "name": "Hydrogen",
+              "symbol": "He",
+              "name": "Helium",
               "ok": true,
-              "reason": "H2 stays vapor at -93 C / 300 kPa",
+              "reason": "He stays vapor at -93 C / 300 kPa",
               "candidates": [
                 {
-                  "symbol": "H2",
-                  "name": "Hydrogen",
+                  "symbol": "He",
+                  "name": "Helium",
                   "ok": true
                 }
               ]
@@ -986,14 +986,14 @@
             "t_C": -180.0,
             "p_kPa": 300.0,
             "media": {
-              "symbol": "H2",
-              "name": "Hydrogen",
+              "symbol": "He",
+              "name": "Helium",
               "ok": true,
-              "reason": "H2 stays vapor at -180 C / 300 kPa",
+              "reason": "He stays vapor at -180 C / 300 kPa",
               "candidates": [
                 {
-                  "symbol": "H2",
-                  "name": "Hydrogen",
+                  "symbol": "He",
+                  "name": "Helium",
                   "ok": true
                 }
               ]
@@ -1350,7 +1350,7 @@
           "note": "Keep ≥1 atm or chamber HX derates."
         }
       ],
-      "ascii": "Stationeers cascade  --  end setup (devices + valves)\n========================================================\nDump 40.0 C room  ->  load -180.0 C\n\n  [40 C ROOM]\n       |  dump PR 300 kPa   gas X\n       |  convection radiators x5  (pipe ~55 C, dT 15 K)\n       v\n  [ S0 CONDENSER  X     58.0 C  3832 kPa  x1 ]\n       |  Condensation Chamber pressure = 3832 kPa\n       |  vapor -> CFHE x1 (eta 0.70)\n       |  gas VP 5.019 L/tick   liquid VP 0.250 L/tick\n       |  OWV gas->cond / OWV liquid->evap   purge <= 6000 kPa\n       v\n  [ S0 EVAPORATOR X     -94.8 C  1846 kPa  x1 ]\n       |  liquid vol reg 20 L, feed 0.25 L/tick\n       |  evap gas PR 1846 kPa\n       |  coupling PR 300 kPa  @ -87.7 C   gas H2\n       v\n  [ S1 CONDENSER  CH4   -83.2 C  4688 kPa  x1 ]\n       |  Condensation Chamber pressure = 4688 kPa\n       |  vapor -> CFHE x2 (eta 0.91)\n       |  gas VP 4.924 L/tick   liquid VP 0.250 L/tick\n       |  OWV gas->cond / OWV liquid->evap   purge <= 6000 kPa\n       v\n  [ S1 EVAPORATOR CH4   -102.5 C  1801 kPa  x1 ]\n       |  liquid vol reg 20 L, feed 0.25 L/tick\n       |  evap gas PR 1801 kPa\n       |  coupling PR 300 kPa  @ -92.7 C   gas H2\n       v\n  [ S2 CONDENSER  N2    -88.2 C  5022 kPa  x1 ]\n       |  Condensation Chamber pressure = 5022 kPa\n       |  vapor -> CFHE x6 (eta 1.00)\n       |  gas VP 35.554 L/tick   liquid VP 0.250 L/tick\n       |  OWV gas->cond / OWV liquid->evap   purge <= 6000 kPa\n       v\n  [ S2 EVAPORATOR N2    -188.1 C  143 kPa  x1 ]\n       |  liquid vol reg 20 L, feed 0.25 L/tick\n       |  evap gas PR 143 kPa\n       |  coupling PR 300 kPa  @ -180.0 C   gas H2\n       v\n  [ LOAD  -180.0 C ]\n\nValve list:\n  - Pressure Regulator (dump loop): 300.0 kPa\n      Pipe convection radiators on one gas pipe. Suggested media: X.\n  - Pipe Convection Radiator: 5 count\n      Sized at 15 K over room, pipe >=1 atm both sides. Auto-sized so dump is not the bottleneck.\n  - S0 Condensation Chamber: 3832.0 kPa\n      In-game pressure setting. T_sat ≈ 58.0 C. x1 chamber(s).\n  - S0 Evaporation Chamber liquid volume regulator: 20.0 L\n      Hold 20 L. Internal feed 0.25 L/tick (1 x 0.25 L/tick).\n  - S0 Pressure Regulator (evaporator gas outlet): 1846.3 kPa\n      Holds T_evap ≈ -94.8 C. x1 chamber(s).\n  - S0 Volume Pump (liquid CFHE side): 0.25 L/tick\n      Match chamber liquid feed. 6.250 mol/tick of X.\n  - S0 Volume Pump (gas CFHE side): 5.019 L/tick\n      Same 6.250 mol/tick at evap -94.8 C / 1846 kPa so CFHE mol-flows match.\n  - S0 Pressure Relief Valve (liquid line flash purge): 6000.0 kPa\n      Dump flash gas or the liquid pipe hits 6 MPa. Vent to a waste tank.\n  - S0 One-Way Valve (liquid): toward evaporator\n      Prevents reverse flow through the CFHE liquid path.\n  - S0 One-Way Valve (gas): toward condenser\n      Prevents reverse flow through the CFHE gas path.\n  - S0 Pressure Regulator (cold HX / coupling loop): 300.0 kPa\n      Keep ≥1 atm or chamber HX derates.\n  - S1 Condensation Chamber: 4688.5 kPa\n      In-game pressure setting. T_sat ≈ -83.1 C. x1 chamber(s).\n  - S1 Evaporation Chamber liquid volume regulator: 20.0 L\n      Hold 20 L. Internal feed 0.25 L/tick (1 x 0.25 L/tick).\n  - S1 Pressure Regulator (evaporator gas outlet): 1800.6 kPa\n      Holds T_evap ≈ -102.5 C. x1 chamber(s).\n  - S1 Volume Pump (liquid CFHE side): 0.25 L/tick\n      Match chamber liquid feed. 6.250 mol/tick of CH4.\n  - S1 Volume Pump (gas CFHE side): 4.924 L/tick\n      Same 6.250 mol/tick at evap -102.5 C / 1801 kPa so CFHE mol-flows match.\n  - S1 Pressure Relief Valve (liquid line flash purge): 6000.0 kPa\n      Dump flash gas or the liquid pipe hits 6 MPa. Vent to a waste tank.\n  - S1 One-Way Valve (liquid): toward evaporator\n      Prevents reverse flow through the CFHE liquid path.\n  - S1 One-Way Valve (gas): toward condenser\n      Prevents reverse flow through the CFHE gas path.\n  - S1 Pressure Regulator (cold HX / coupling loop): 300.0 kPa\n      Keep ≥1 atm or chamber HX derates.\n  - S2 Condensation Chamber: 5021.6 kPa\n      In-game pressure setting. T_sat ≈ -88.1 C. x1 chamber(s).\n  - S2 Evaporation Chamber liquid volume regulator: 20.0 L\n      Hold 20 L. Internal feed 0.25 L/tick (1 x 0.25 L/tick).\n  - S2 Pressure Regulator (evaporator gas outlet): 142.8 kPa\n      Holds T_evap ≈ -188.1 C. x1 chamber(s).\n  - S2 Volume Pump (liquid CFHE side): 0.25 L/tick\n      Match chamber liquid feed. 7.184 mol/tick of N2.\n  - S2 Volume Pump (gas CFHE side): 35.554 L/tick\n      Same 7.184 mol/tick at evap -188.1 C / 143 kPa so CFHE mol-flows match.\n  - S2 Pressure Relief Valve (liquid line flash purge): 6000.0 kPa\n      Dump flash gas or the liquid pipe hits 6 MPa. Vent to a waste tank.\n  - S2 One-Way Valve (liquid): toward evaporator\n      Prevents reverse flow through the CFHE liquid path.\n  - S2 One-Way Valve (gas): toward condenser\n      Prevents reverse flow through the CFHE gas path.\n  - S2 Pressure Regulator (cold HX / coupling loop): 300.0 kPa\n      Keep ≥1 atm or chamber HX derates.\n"
+      "ascii": "Stationeers cascade  --  end setup (devices + valves)\n========================================================\nDump 40.0 C room  ->  load -180.0 C\n\n  [40 C ROOM]\n       |  dump PR 300 kPa   gas X\n       |  convection radiators x5  (pipe ~55 C, dT 15 K)\n       v\n  [ S0 CONDENSER  X     58.0 C  3832 kPa  x1 ]\n       |  Condensation Chamber pressure = 3832 kPa\n       |  vapor -> CFHE x1 (eta 0.70)\n       |  gas VP 5.019 L/tick   liquid VP 0.250 L/tick\n       |  OWV gas->cond / OWV liquid->evap   purge <= 6000 kPa\n       v\n  [ S0 EVAPORATOR X     -94.8 C  1846 kPa  x1 ]\n       |  liquid vol reg 20 L, feed 0.25 L/tick\n       |  evap gas PR 1846 kPa\n       |  coupling PR 300 kPa  @ -87.7 C   gas He\n       v\n  [ S1 CONDENSER  CH4   -83.2 C  4688 kPa  x1 ]\n       |  Condensation Chamber pressure = 4688 kPa\n       |  vapor -> CFHE x2 (eta 0.91)\n       |  gas VP 4.924 L/tick   liquid VP 0.250 L/tick\n       |  OWV gas->cond / OWV liquid->evap   purge <= 6000 kPa\n       v\n  [ S1 EVAPORATOR CH4   -102.5 C  1801 kPa  x1 ]\n       |  liquid vol reg 20 L, feed 0.25 L/tick\n       |  evap gas PR 1801 kPa\n       |  coupling PR 300 kPa  @ -92.7 C   gas He\n       v\n  [ S2 CONDENSER  N2    -88.2 C  5022 kPa  x1 ]\n       |  Condensation Chamber pressure = 5022 kPa\n       |  vapor -> CFHE x6 (eta 1.00)\n       |  gas VP 35.554 L/tick   liquid VP 0.250 L/tick\n       |  OWV gas->cond / OWV liquid->evap   purge <= 6000 kPa\n       v\n  [ S2 EVAPORATOR N2    -188.1 C  143 kPa  x1 ]\n       |  liquid vol reg 20 L, feed 0.25 L/tick\n       |  evap gas PR 143 kPa\n       |  coupling PR 300 kPa  @ -180.0 C   gas He\n       v\n  [ LOAD  -180.0 C ]\n\nValve list:\n  - Pressure Regulator (dump loop): 300.0 kPa\n      Pipe convection radiators on one gas pipe. Suggested media: X.\n  - Pipe Convection Radiator: 5 count\n      Sized at 15 K over room, pipe >=1 atm both sides. Auto-sized so dump is not the bottleneck.\n  - S0 Condensation Chamber: 3832.0 kPa\n      In-game pressure setting. T_sat ≈ 58.0 C. x1 chamber(s).\n  - S0 Evaporation Chamber liquid volume regulator: 20.0 L\n      Hold 20 L. Internal feed 0.25 L/tick (1 x 0.25 L/tick).\n  - S0 Pressure Regulator (evaporator gas outlet): 1846.3 kPa\n      Holds T_evap ≈ -94.8 C. x1 chamber(s).\n  - S0 Volume Pump (liquid CFHE side): 0.25 L/tick\n      Match chamber liquid feed. 6.250 mol/tick of X.\n  - S0 Volume Pump (gas CFHE side): 5.019 L/tick\n      Same 6.250 mol/tick at evap -94.8 C / 1846 kPa so CFHE mol-flows match.\n  - S0 Pressure Relief Valve (liquid line flash purge): 6000.0 kPa\n      Dump flash gas or the liquid pipe hits 6 MPa. Vent to a waste tank.\n  - S0 One-Way Valve (liquid): toward evaporator\n      Prevents reverse flow through the CFHE liquid path.\n  - S0 One-Way Valve (gas): toward condenser\n      Prevents reverse flow through the CFHE gas path.\n  - S0 Pressure Regulator (cold HX / coupling loop): 300.0 kPa\n      Keep ≥1 atm or chamber HX derates.\n  - S1 Condensation Chamber: 4688.5 kPa\n      In-game pressure setting. T_sat ≈ -83.1 C. x1 chamber(s).\n  - S1 Evaporation Chamber liquid volume regulator: 20.0 L\n      Hold 20 L. Internal feed 0.25 L/tick (1 x 0.25 L/tick).\n  - S1 Pressure Regulator (evaporator gas outlet): 1800.6 kPa\n      Holds T_evap ≈ -102.5 C. x1 chamber(s).\n  - S1 Volume Pump (liquid CFHE side): 0.25 L/tick\n      Match chamber liquid feed. 6.250 mol/tick of CH4.\n  - S1 Volume Pump (gas CFHE side): 4.924 L/tick\n      Same 6.250 mol/tick at evap -102.5 C / 1801 kPa so CFHE mol-flows match.\n  - S1 Pressure Relief Valve (liquid line flash purge): 6000.0 kPa\n      Dump flash gas or the liquid pipe hits 6 MPa. Vent to a waste tank.\n  - S1 One-Way Valve (liquid): toward evaporator\n      Prevents reverse flow through the CFHE liquid path.\n  - S1 One-Way Valve (gas): toward condenser\n      Prevents reverse flow through the CFHE gas path.\n  - S1 Pressure Regulator (cold HX / coupling loop): 300.0 kPa\n      Keep ≥1 atm or chamber HX derates.\n  - S2 Condensation Chamber: 5021.6 kPa\n      In-game pressure setting. T_sat ≈ -88.1 C. x1 chamber(s).\n  - S2 Evaporation Chamber liquid volume regulator: 20.0 L\n      Hold 20 L. Internal feed 0.25 L/tick (1 x 0.25 L/tick).\n  - S2 Pressure Regulator (evaporator gas outlet): 142.8 kPa\n      Holds T_evap ≈ -188.1 C. x1 chamber(s).\n  - S2 Volume Pump (liquid CFHE side): 0.25 L/tick\n      Match chamber liquid feed. 7.184 mol/tick of N2.\n  - S2 Volume Pump (gas CFHE side): 35.554 L/tick\n      Same 7.184 mol/tick at evap -188.1 C / 143 kPa so CFHE mol-flows match.\n  - S2 Pressure Relief Valve (liquid line flash purge): 6000.0 kPa\n      Dump flash gas or the liquid pipe hits 6 MPa. Vent to a waste tank.\n  - S2 One-Way Valve (liquid): toward evaporator\n      Prevents reverse flow through the CFHE liquid path.\n  - S2 One-Way Valve (gas): toward condenser\n      Prevents reverse flow through the CFHE gas path.\n  - S2 Pressure Regulator (cold HX / coupling loop): 300.0 kPa\n      Keep ≥1 atm or chamber HX derates.\n"
     }
   }
 }

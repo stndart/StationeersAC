@@ -20,7 +20,7 @@ from cascade.models import CascadeResult, StepEval
 from cascade.physics import c_from_k, cfhe_eta, gas_volume_L_per_tick
 
 DUMP_CANDIDATES = ("X", "N2O")
-COUPLING_CANDIDATES = ("H2", "X", "N2O", "N2", "CH4", "O2")
+COUPLING_CANDIDATES = ("He", "H2", "X", "N2O", "N2", "CH4", "O2")
 
 
 def _r(x: float, nd: int = 3) -> float:
@@ -51,6 +51,8 @@ def stays_vapor(gas: Gas, t_K: float, p_kPa: float, margin: float = 1.2) -> bool
     """True if the species will not condense at (T, P)."""
     if t_K <= 0 or p_kPa <= 0:
         return False
+    if gas.t_crit is None and gas.t_freeze is None:
+        return True
     if gas.t_crit is not None and t_K >= gas.t_crit:
         return True
     if gas.t_freeze is not None and t_K < gas.t_freeze:

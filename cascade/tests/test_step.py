@@ -21,6 +21,8 @@ class TestPsat(unittest.TestCase):
     def test_alias(self) -> None:
         self.assertEqual(get_gas("pollutant").symbol, "X")
         self.assertEqual(get_gas("methane").symbol, "CH4")
+        self.assertEqual(get_gas("helium").symbol, "He")
+        self.assertEqual(get_gas("He").symbol, "He")
 
 
 class TestFreezeWarn(unittest.TestCase):
@@ -143,13 +145,44 @@ class TestPlant(unittest.TestCase):
         ):
             self.assertIn(need, roles)
         last = plant["stages"][-1]
-        self.assertEqual(last["coupling_out"]["media"]["symbol"], "H2")
+        self.assertEqual(last["coupling_out"]["media"]["symbol"], "He")
         self.assertIn("Condensation Chamber", plant["ascii"])
         self.assertIn("Volume Pump", plant["ascii"])
         gas_pump = next(v for v in last["valves"] if v["role"] == "gas_pump")
         self.assertGreater(float(gas_pump["setting"]), 0.0)
         liq_pump = next(v for v in last["valves"] if v["role"] == "liquid_pump")
         self.assertAlmostEqual(float(liq_pump["setting"]), 0.25, delta=1e-9)
+
+
+class TestHydrogenHeliumWiki(unittest.TestCase):
+    def test_h2_can_refrigerate(self) -> None:
+        h2 = get_gas("H2")
+        self.assertTrue(h2.can_refrigerate())
+        self.assertAlmostEqual(h2.latent, 200.0)
+        self.assertAlmostEqual(h2.v_liq, 0.028)
+        self.assertAlmostEqual(h2.p_sat(28.11), 100.0, delta=5.0)
+
+    def test_helium_is_coupling_only(self) -> None:
+        from cascade.plant import stays_vapor
+
+        he = get_gas("He")
+        self.assertFalse(he.can_refrigerate())
+        self.assertTrue(stays_vapor(he, 40.0, 6000.0))
+        self.assertTrue(stays_vapor(he, 15.0, 300.0))
+
+    def test_sil_ch4_n2_h2_at_minus_205(self) -> None:
+        r = run_cascade(
+            steps=[
+                StepSpec(media="Sil"),
+                StepSpec(media="CH4"),
+                StepSpec(media="N2"),
+                StepSpec(media="H2"),
+            ],
+            t_hot_C=40,
+            t_target_C=-205,
+        )
+        self.assertGreater(r.q_at_target_kj_tick, 0.0)
+        self.assertEqual(r.steps[-1].resolved.media, "H2")
 
 
 class TestApiHelpers(unittest.TestCase):

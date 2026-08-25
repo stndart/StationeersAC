@@ -27,10 +27,18 @@
     {
       "symbol": "H2",
       "name": "Hydrogen",
+      "can_refrigerate": true,
+      "t_freeze_C": -257.97,
+      "t_crit_C": -203.09,
+      "notes": "Wiki Module:Gas/data. L=200 J/mol (limited); V_liq=0.028 L/mol. Freeze 15.2 K @ 6.3 kPa, T_crit 70.1 K @ 6 MPa. Condenser must sit below -203 C."
+    },
+    {
+      "symbol": "He",
+      "name": "Helium",
       "can_refrigerate": false,
-      "t_freeze_C": -258.15,
-      "t_crit_C": -203.15,
-      "notes": "Chart 2026-04-19. Coupling gas / LH2; not a -180 C refrigerant."
+      "t_freeze_C": null,
+      "t_crit_C": null,
+      "notes": "Wiki Module:Gas/data. Inert; never freezes or condenses (L=0, A=B=0). Best coupling / Stirling gas (gamma 5/3, SHC 20.8, MW 4)."
     },
     {
       "symbol": "X",

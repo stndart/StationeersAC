@@ -56,7 +56,7 @@ test("default X/CH4/N2 chain matches Python Q, plant roles, last coupling", () =
   for (const need of VALVE_ROLES) {
     assert.ok(roles.has(need), `missing valve role ${need}`);
   }
-  assert.equal(got.plant.stages.at(-1).coupling_out.media.symbol, "H2");
+  assert.equal(got.plant.stages.at(-1).coupling_out.media.symbol, "He");
   assert.equal(
     got.plant.stages.at(-1).coupling_out.media.symbol,
     output.plant.stages.at(-1).coupling_out.media.symbol,
