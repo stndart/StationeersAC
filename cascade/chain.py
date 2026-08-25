@@ -17,7 +17,7 @@ from cascade.models import (
 )
 from cascade.optimize import optimize_step, placement_fixed_ports, placement_max_t_hot
 from cascade.physics import c_from_k, k_from_c, kj_tick_to_kj_s, q_radiator_kj_tick
-from cascade.step import evaluate_step, operable_window
+from cascade.step import bottleneck_of, evaluate_step, operable_window
 
 
 def _t_hot_for_resolved(resolved: StepResolved, q_need: float) -> float:
@@ -30,6 +30,39 @@ def _t_hot_for_resolved(resolved: StepResolved, q_need: float) -> float:
     return resolved.t_cond_K - q_need / ua
 
 
+def _same_media_upstream(specs: list[StepSpec], i: int) -> int:
+    sym = get_gas(specs[i].media).symbol
+    n = 0
+    for j in range(i - 1, -1, -1):
+        if get_gas(specs[j].media).symbol == sym:
+            n += 1
+        else:
+            break
+    return n
+
+
+def _t_hot_cap(specs: list[StepSpec], i: int, t_cold_K: float) -> float | None:
+    """Split the remaining operable window among consecutive same-media stages."""
+    n_same = _same_media_upstream(specs, i)
+    if n_same == 0:
+        return None
+    w = operable_window(get_gas(specs[i].media))
+    if w is None:
+        return None
+    span = w[1] - t_cold_K
+    if span <= 1.0:
+        return None
+    return t_cold_K + span / (n_same + 1)
+
+
+def _forced_t_hot(specs: list[StepSpec], i: int) -> float | None:
+    if specs[i].t_hot_C is not None:
+        return k_from_c(specs[i].t_hot_C)
+    if i > 0 and specs[i - 1].t_cold_C is not None:
+        return k_from_c(specs[i - 1].t_cold_C)
+    return None
+
+
 def _try_q(specs: list[StepSpec], t_dump_K: float, t_target_K: float, q_need: float) -> list[tuple[StepResolved, float, float]] | None:
     """Place from load backward. Returns (resolved, T_hot, T_cold) per step or None."""
     n = len(specs)
@@ -37,16 +70,26 @@ def _try_q(specs: list[StepSpec], t_dump_K: float, t_target_K: float, q_need: fl
     t_cold = t_target_K
     for i in range(n - 1, -1, -1):
         spec = specs[i]
+        if spec.t_cold_C is not None:
+            t_cold = k_from_c(spec.t_cold_C)
         if i == 0:
-            r = placement_fixed_ports(spec, t_dump_K, t_cold, q_need)
+            t_hot = t_dump_K if spec.t_hot_C is None else k_from_c(spec.t_hot_C)
+            r = placement_fixed_ports(spec, t_hot, t_cold, q_need)
             if r is None:
                 return None
-            placed[i] = (r, t_dump_K, t_cold)
+            placed[i] = (r, t_hot, t_cold)
         else:
-            r = placement_max_t_hot(spec, t_cold, q_need)
-            if r is None:
-                return None
-            t_hot = _t_hot_for_resolved(r, q_need)
+            forced = _forced_t_hot(specs, i)
+            if forced is not None:
+                r = placement_fixed_ports(spec, forced, t_cold, q_need)
+                if r is None:
+                    return None
+                t_hot = forced
+            else:
+                r = placement_max_t_hot(spec, t_cold, q_need, t_hot_cap=_t_hot_cap(specs, i, t_cold))
+                if r is None:
+                    return None
+                t_hot = _t_hot_for_resolved(r, q_need)
             ev = evaluate_step(r, t_hot, t_cold)
             if not ev.operable or ev.q_kj_tick + 1e-6 < q_need:
                 return None
@@ -90,6 +133,30 @@ def _floor_if_sacrifice(specs: list[StepSpec]) -> float:
             return float("nan")
         t_cond_max_next = gas.t_crit - MARGIN_K
     return floor
+
+
+def _chain_bottleneck(evals: list[StepEval]) -> Bottleneck:
+    """Greedy max-T_hot parks every condenser at Q/UA, so per-step cond_HX ties are not the ceiling.
+
+    Intermediate stages: min(feed, evap). Dump stage also includes cond (T_hot is the room).
+    """
+    best_i = 0
+    best_cap = float("inf")
+    for i, e in enumerate(evals):
+        include_cond = i == 0
+        cap_parts = [e.q_feed, e.q_evap_hx]
+        if include_cond:
+            cap_parts.append(e.q_cond_hx)
+        cap = 0.0 if e.q_kj_tick <= 0 else min(cap_parts)
+        if cap < best_cap:
+            best_cap = cap
+            best_i = i
+    e = evals[best_i]
+    bot = bottleneck_of(
+        e.q_feed, e.q_evap_hx, e.q_cond_hx, e.useful_frac, e.q_kj_tick, include_cond=(best_i == 0)
+    )
+    bot.step = best_i
+    return bot
 
 
 def _chain_curve(evals: list[StepEval], t_dump_K: float) -> PowerCurve:
@@ -172,8 +239,7 @@ def run_cascade(
         evals.append(evaluate_step(r, t_hot, t_cold, step=i))
 
     q_chain = min(e.q_kj_tick for e in evals)
-    bot_step = min(range(len(evals)), key=lambda i: evals[i].q_kj_tick)
-    bot = evals[bot_step].bottleneck
+    bot = _chain_bottleneck(evals)
 
     rad_q = q_radiator_kj_tick(DUMP_RAD_DT_K, 300.0, P_ATM, 1)
     n_rad_needed = max(1, math.ceil(q_chain / rad_q - 1e-9)) if rad_q > 0 else 1

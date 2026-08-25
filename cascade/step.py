@@ -115,15 +115,28 @@ def warnings_for(
     return w
 
 
-def _bottleneck(q_feed: float, q_evap: float, q_cond: float, uf: float, q: float) -> Bottleneck:
+def bottleneck_of(
+    q_feed: float,
+    q_evap: float,
+    q_cond: float,
+    uf: float,
+    q: float,
+    include_cond: bool = True,
+) -> Bottleneck:
     if q <= 0:
         kind: str = "none"
     else:
-        parts = [("liquid_feed", q_feed), ("evap_HX", q_evap), ("cond_HX", q_cond)]
+        parts = [("liquid_feed", q_feed), ("evap_HX", q_evap)]
+        if include_cond:
+            parts.append(("cond_HX", q_cond))
         kind = min(parts, key=lambda kv: kv[1])[0]
         if kind == "liquid_feed" and uf < 0.85:
             kind = "cfhe"
     return Bottleneck(kind, round(q, 4), _LEVER[kind])  # type: ignore[arg-type]
+
+
+def _bottleneck(q_feed: float, q_evap: float, q_cond: float, uf: float, q: float) -> Bottleneck:
+    return bottleneck_of(q_feed, q_evap, q_cond, uf, q, include_cond=True)
 
 
 def power_curve(
@@ -206,11 +219,11 @@ def evaluate_step(
         resolved=resolved,
         t_hot_K=t_hot_K,
         t_cold_K=t_cold_K,
-        q_feed=round(q_feed, 4),
-        q_evap_hx=round(q_evap, 4),
-        q_cond_hx=round(q_cond, 4),
-        q_kj_tick=round(q, 4),
-        useful_frac=round(uf, 4),
+        q_feed=q_feed,
+        q_evap_hx=q_evap,
+        q_cond_hx=q_cond,
+        q_kj_tick=q,
+        useful_frac=uf,
         warnings=warns,
         bottleneck=bot,
         curve=curve,

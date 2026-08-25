@@ -12,12 +12,38 @@ import {
   q_radiator_kj_tick,
   ua_chamber_kj_tick_k,
 } from "./physics.js";
-import { evaluate_step, operable_window } from "./step.js";
+import { evaluate_step, operable_window, bottleneckOf } from "./step.js";
 
 function tHotForResolved(resolved, q_need) {
   const ua = ua_chamber_kj_tick_k(resolved.hx_hot_kPa, resolved.p_cond_kPa, resolved.n_cond_chambers);
   if (ua <= 1e-12) return resolved.t_cond_K;
   return resolved.t_cond_K - q_need / ua;
+}
+
+function sameMediaUpstream(specs, i) {
+  const sym = get_gas(specs[i].media).symbol;
+  let n = 0;
+  for (let j = i - 1; j >= 0; j--) {
+    if (get_gas(specs[j].media).symbol === sym) n += 1;
+    else break;
+  }
+  return n;
+}
+
+function tHotCap(specs, i, t_cold_K) {
+  const n_same = sameMediaUpstream(specs, i);
+  if (n_same === 0) return null;
+  const w = operable_window(get_gas(specs[i].media));
+  if (w == null) return null;
+  const span = w[1] - t_cold_K;
+  if (span <= 1.0) return null;
+  return t_cold_K + span / (n_same + 1);
+}
+
+function forcedTHot(specs, i) {
+  if (specs[i].t_hot_C != null) return k_from_c(specs[i].t_hot_C);
+  if (i > 0 && specs[i - 1].t_cold_C != null) return k_from_c(specs[i - 1].t_cold_C);
+  return null;
 }
 
 function tryQ(specs, t_dump_K, t_target_K, q_need) {
@@ -27,14 +53,25 @@ function tryQ(specs, t_dump_K, t_target_K, q_need) {
   let t_cold = t_target_K;
   for (let i = n - 1; i >= 0; i--) {
     const spec = specs[i];
+    if (spec.t_cold_C != null) t_cold = k_from_c(spec.t_cold_C);
     if (i === 0) {
-      const r = placement_fixed_ports(spec, t_dump_K, t_cold, q_need);
+      const t_hot = spec.t_hot_C != null ? k_from_c(spec.t_hot_C) : t_dump_K;
+      const r = placement_fixed_ports(spec, t_hot, t_cold, q_need);
       if (r == null) return null;
-      placed[i] = [r, t_dump_K, t_cold];
+      placed[i] = [r, t_hot, t_cold];
     } else {
-      const r = placement_max_t_hot(spec, t_cold, q_need);
-      if (r == null) return null;
-      const t_hot = tHotForResolved(r, q_need);
+      const forced = forcedTHot(specs, i);
+      let r;
+      let t_hot;
+      if (forced != null) {
+        r = placement_fixed_ports(spec, forced, t_cold, q_need);
+        if (r == null) return null;
+        t_hot = forced;
+      } else {
+        r = placement_max_t_hot(spec, t_cold, q_need, tHotCap(specs, i, t_cold));
+        if (r == null) return null;
+        t_hot = tHotForResolved(r, q_need);
+      }
       const ev = evaluate_step(r, t_hot, t_cold);
       if (!ev.operable || ev.q_kj_tick + 1e-6 < q_need) return null;
       placed[i] = [r, t_hot, t_cold];
@@ -73,6 +110,26 @@ function floorIfSacrifice(specs) {
     t_cond_max_next = gas.t_crit - MARGIN_K;
   }
   return floor;
+}
+
+function chainBottleneck(evals) {
+  let bestI = 0;
+  let bestCap = Infinity;
+  for (let i = 0; i < evals.length; i++) {
+    const e = evals[i];
+    const includeCond = i === 0;
+    const caps = [e.q_feed, e.q_evap_hx];
+    if (includeCond) caps.push(e.q_cond_hx);
+    const cap = e.q_kj_tick <= 0 ? 0.0 : Math.min(...caps);
+    if (cap < bestCap) {
+      bestCap = cap;
+      bestI = i;
+    }
+  }
+  const e = evals[bestI];
+  const bot = bottleneckOf(e.q_feed, e.q_evap_hx, e.q_cond_hx, e.useful_frac, e.q_kj_tick, bestI === 0);
+  bot.step = bestI;
+  return bot;
 }
 
 function chainCurve(evals, _t_dump_K) {
@@ -159,8 +216,7 @@ export function run_cascade(steps, t_hot_C, t_target_C, dump_radiators = null) {
   const evals = best_place.map(([r, t_hot, t_cold], i) => evaluate_step(r, t_hot, t_cold, i));
 
   let q_chain = Math.min(...evals.map((e) => e.q_kj_tick));
-  const bot_step = evals.reduce((bestI, e, i, arr) => (e.q_kj_tick < arr[bestI].q_kj_tick ? i : bestI), 0);
-  let bot = evals[bot_step].bottleneck;
+  let bot = chainBottleneck(evals);
 
   const rad_q = q_radiator_kj_tick(DUMP_RAD_DT_K, 300.0, P_ATM, 1);
   const n_rad_needed = rad_q > 0 ? Math.max(1, Math.ceil(q_chain / rad_q - 1e-9)) : 1;

@@ -19,6 +19,10 @@ const INT_FIELDS = ["n_cfhe", "n_evap_chambers", "n_cond_chambers"];
 const FLOAT_FIELDS = [
   "p_cond_kPa",
   "p_evap_kPa",
+  "t_cond_C",
+  "t_evap_C",
+  "t_hot_C",
+  "t_cold_C",
   "inventory_mol",
   "hx_hot_kPa",
   "hx_cold_kPa",
@@ -26,8 +30,12 @@ const FLOAT_FIELDS = [
 ];
 
 export const LOCKABLE_FIELDS = [
+  { key: "t_cond_C", label: "Condenser temperature", type: "float", unit: "C" },
   { key: "p_cond_kPa", label: "Condenser pressure", type: "float", unit: "kPa" },
+  { key: "t_evap_C", label: "Evaporator temperature", type: "float", unit: "C" },
   { key: "p_evap_kPa", label: "Evaporator pressure", type: "float", unit: "kPa" },
+  { key: "t_hot_C", label: "Hot port temperature", type: "float", unit: "C" },
+  { key: "t_cold_C", label: "Cold port temperature", type: "float", unit: "C" },
   { key: "n_cfhe", label: "CFHE count", type: "int", unit: "" },
   { key: "inventory_mol", label: "Inventory", type: "float", unit: "mol" },
   { key: "n_evap_chambers", label: "Evaporator chambers", type: "int", unit: "" },

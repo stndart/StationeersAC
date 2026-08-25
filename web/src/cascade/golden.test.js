@@ -84,3 +84,40 @@ test("infeasible H2O warns and Q is 0", () => {
   assert.equal(got.q_at_target_kj_tick, 0);
   assert.equal(got.q_at_target_kj_tick, output.q_at_target_kj_tick);
 });
+
+test("Sil/N2/H2 at -246 bottlenecks on H2 evap, not N2 cond", () => {
+  const got = runFromBody({
+    t_hot_C: 20,
+    t_target_C: -246,
+    dump_radiators: null,
+    steps: [{ media: "Sil" }, { media: "N2" }, { media: "H2" }],
+  });
+  assert.ok(got.q_at_target_kj_tick > 0.85);
+  assert.ok(got.q_at_target_kj_tick < 1.1);
+  assert.equal(got.bottleneck.step, 2);
+  assert.equal(got.bottleneck.kind, "evap_HX");
+});
+
+test("Sil/N2/H2/H2 splits the H2 window instead of 0 K first stage", () => {
+  const got = runFromBody({
+    t_hot_C: 20,
+    t_target_C: -245,
+    dump_radiators: null,
+    steps: [{ media: "Sil" }, { media: "N2" }, { media: "H2" }, { media: "H2" }],
+  });
+  const warm = got.steps[2];
+  const cold = got.steps[3];
+  assert.ok(warm.t_hot_C - warm.t_cold_C > 5, `warm ports ${warm.t_hot_C} -> ${warm.t_cold_C}`);
+  assert.ok(cold.t_hot_C - cold.t_cold_C > 5, `cold ports ${cold.t_hot_C} -> ${cold.t_cold_C}`);
+});
+
+test("locked evaporator T is not rewritten", () => {
+  const got = runFromBody({
+    t_hot_C: -100,
+    t_target_C: -140,
+    dump_radiators: null,
+    steps: [{ media: "N2", t_evap_C: -150 }],
+  });
+  assert.equal(got.steps[0].locked.t_evap_C, true);
+  assertClose(got.steps[0].t_evap_C, -150, 0.05, "t_evap_C");
+});

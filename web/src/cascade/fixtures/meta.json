@@ -115,16 +115,40 @@
   ],
   "lockable_fields": [
     {
+      "key": "t_cond_C",
+      "label": "Condenser temperature",
+      "type": "float",
+      "unit": "C"
+    },
+    {
       "key": "p_cond_kPa",
       "label": "Condenser pressure",
       "type": "float",
       "unit": "kPa"
     },
     {
+      "key": "t_evap_C",
+      "label": "Evaporator temperature",
+      "type": "float",
+      "unit": "C"
+    },
+    {
       "key": "p_evap_kPa",
       "label": "Evaporator pressure",
       "type": "float",
       "unit": "kPa"
+    },
+    {
+      "key": "t_hot_C",
+      "label": "Hot port temperature",
+      "type": "float",
+      "unit": "C"
+    },
+    {
+      "key": "t_cold_C",
+      "label": "Cold port temperature",
+      "type": "float",
+      "unit": "C"
     },
     {
       "key": "n_cfhe",

@@ -11,14 +11,20 @@ from cascade.constants import (
 )
 from cascade.gases import Gas, get_gas
 from cascade.models import StepResolved, StepSpec
-from cascade.physics import q_chamber_hx_kj_tick, q_feed_kj_tick, ua_chamber_kj_tick_k
+from cascade.physics import k_from_c, q_chamber_hx_kj_tick, q_feed_kj_tick, ua_chamber_kj_tick_k
 from cascade.step import evaluate_step, operable_window, resolved_from_temps
 
 
 def _locked_map(spec: StepSpec) -> dict[str, bool]:
+    t_cond = spec.t_cond_C is not None
+    t_evap = spec.t_evap_C is not None
     return {
-        "p_cond_kPa": spec.p_cond_kPa is not None,
-        "p_evap_kPa": spec.p_evap_kPa is not None,
+        "p_cond_kPa": spec.p_cond_kPa is not None and not t_cond,
+        "p_evap_kPa": spec.p_evap_kPa is not None and not t_evap,
+        "t_cond_C": t_cond,
+        "t_evap_C": t_evap,
+        "t_hot_C": spec.t_hot_C is not None,
+        "t_cold_C": spec.t_cold_C is not None,
         "n_cfhe": spec.n_cfhe is not None,
         "inventory_mol": spec.inventory_mol is not None,
         "n_evap_chambers": spec.n_evap_chambers is not None,
@@ -27,6 +33,22 @@ def _locked_map(spec: StepSpec) -> dict[str, bool]:
         "hx_cold_kPa": spec.hx_cold_kPa is not None,
         "liquid_pipe_L": spec.liquid_pipe_L is not None,
     }
+
+
+def _locked_t_cond(spec: StepSpec, gas: Gas) -> float | None:
+    if spec.t_cond_C is not None:
+        return k_from_c(spec.t_cond_C)
+    if spec.p_cond_kPa is not None and gas.t_crit is not None:
+        return gas.t_sat(spec.p_cond_kPa)
+    return None
+
+
+def _locked_t_evap(spec: StepSpec, gas: Gas) -> float | None:
+    if spec.t_evap_C is not None:
+        return k_from_c(spec.t_evap_C)
+    if spec.p_evap_kPa is not None and gas.t_freeze is not None:
+        return gas.t_sat(spec.p_evap_kPa)
+    return None
 
 
 def _defaults(spec: StepSpec) -> tuple[int, int, float, float, float, float | None]:
@@ -89,22 +111,20 @@ def optimize_step(spec: StepSpec, t_hot_K: float, t_cold_K: float) -> StepResolv
         # Still emit a resolved object so evaluate can hard-fail with a message.
         t_cond = t_hot_K + MARGIN_K
         t_evap = t_cold_K - MARGIN_K
-        if spec.p_cond_kPa is not None:
-            t_cond = gas.t_sat(spec.p_cond_kPa) if gas.t_crit else t_cond
-        if spec.p_evap_kPa is not None:
-            t_evap = gas.t_sat(spec.p_evap_kPa) if gas.t_freeze else t_evap
+        locked_tc = _locked_t_cond(spec, gas)
+        locked_te = _locked_t_evap(spec, gas)
+        if locked_tc is not None:
+            t_cond = locked_tc
+        if locked_te is not None:
+            t_evap = locked_te
         n = spec.n_cfhe if spec.n_cfhe is not None else 1
         return pack(t_cond, t_evap, n)
 
     t_lo, t_hi = window
-    if spec.p_cond_kPa is not None:
-        t_conds = [gas.t_sat(spec.p_cond_kPa)]
-    else:
-        t_conds = _grid(max(t_lo, t_hot_K + 1.0), t_hi, 4.0)
-    if spec.p_evap_kPa is not None:
-        t_evaps = [gas.t_sat(spec.p_evap_kPa)]
-    else:
-        t_evaps = _grid(t_lo, min(t_hi, t_cold_K - 1.0), 4.0)
+    locked_tc = _locked_t_cond(spec, gas)
+    locked_te = _locked_t_evap(spec, gas)
+    t_conds = [locked_tc] if locked_tc is not None else _grid(max(t_lo, t_hot_K + 1.0), t_hi, 4.0)
+    t_evaps = [locked_te] if locked_te is not None else _grid(t_lo, min(t_hi, t_cold_K - 1.0), 4.0)
     n_range = [spec.n_cfhe] if spec.n_cfhe is not None else list(range(1, MAX_CFHE + 1))
 
     best: tuple[float, int, float, float] | None = None  # Q, -n_cfhe, t_cond, t_evap
@@ -119,17 +139,13 @@ def optimize_step(spec: StepSpec, t_hot_K: float, t_cold_K: float) -> StepResolv
                     best = key
 
     # 1 K refine around coarse winner (unlocked axes only)
-    if best is not None and (spec.p_cond_kPa is None or spec.p_evap_kPa is None):
+    if best is not None and (locked_tc is None or locked_te is None):
         _, _, tc0, te0 = best
         t_conds_r = (
-            [tc0]
-            if spec.p_cond_kPa is not None
-            else _grid(max(t_lo, tc0 - 4), min(t_hi, tc0 + 4), 1.0)
+            [tc0] if locked_tc is not None else _grid(max(t_lo, tc0 - 4), min(t_hi, tc0 + 4), 1.0)
         )
         t_evaps_r = (
-            [te0]
-            if spec.p_evap_kPa is not None
-            else _grid(max(t_lo, te0 - 4), min(t_hi, te0 + 4), 1.0)
+            [te0] if locked_te is not None else _grid(max(t_lo, te0 - 4), min(t_hi, te0 + 4), 1.0)
         )
         for n in n_range:
             for te in t_evaps_r:
@@ -151,8 +167,14 @@ def optimize_step(spec: StepSpec, t_hot_K: float, t_cold_K: float) -> StepResolv
     return pack(tc, te, int(-nneg))
 
 
-def placement_max_t_hot(spec: StepSpec, t_cold_K: float, q_need: float) -> StepResolved | None:
-    """Among configs that deliver q_need at T_cold, pick the one that tolerates the warmest T_hot."""
+def placement_max_t_hot(
+    spec: StepSpec, t_cold_K: float, q_need: float, t_hot_cap: float | None = None
+) -> StepResolved | None:
+    """Among configs that deliver q_need at T_cold, pick the one that tolerates the warmest T_hot.
+
+    If t_hot_cap is set (same-media stage upstream), prefer T_hot at or below the cap so the
+    warmer twin still has a real lift instead of a 0 K port span.
+    """
     gas = get_gas(spec.media)
     if not gas.can_refrigerate() or operable_window(gas) is None:
         return None
@@ -160,17 +182,13 @@ def placement_max_t_hot(spec: StepSpec, t_cold_K: float, q_need: float) -> StepR
     n_evap, n_cond, hx_hot, hx_cold, pipe, inv = _defaults(spec)
     t_lo, t_hi = operable_window(gas)  # type: ignore[misc]
 
-    if spec.p_cond_kPa is not None:
-        t_conds = [gas.t_sat(spec.p_cond_kPa)]
-    else:
-        t_conds = _grid(t_lo, t_hi, 4.0)
-    if spec.p_evap_kPa is not None:
-        t_evaps = [gas.t_sat(spec.p_evap_kPa)]
-    else:
-        t_evaps = _grid(t_lo, min(t_hi, t_cold_K - 0.5), 4.0)
+    locked_tc = _locked_t_cond(spec, gas)
+    locked_te = _locked_t_evap(spec, gas)
+    t_conds = [locked_tc] if locked_tc is not None else _grid(t_lo, t_hi, 4.0)
+    t_evaps = [locked_te] if locked_te is not None else _grid(t_lo, min(t_hi, t_cold_K - 0.5), 4.0)
     n_range = [spec.n_cfhe] if spec.n_cfhe is not None else list(range(1, MAX_CFHE + 1))
 
-    best: tuple[float, float, int, float, float] | None = None  # t_hot, q, -n, tc, te
+    best: tuple | None = None
     for n in n_range:
         for te in t_evaps:
             p_evap = gas.p_sat(te)
@@ -193,12 +211,13 @@ def placement_max_t_hot(spec: StepSpec, t_cold_K: float, q_need: float) -> StepR
                 if t_hot >= tc:
                     continue
                 q_actual = min(q_feed, q_evap, q_need + ua_c * max(0.0, tc - t_hot))
-                key = (t_hot, q_actual, -n, tc, te)
+                excess = 0.0 if t_hot_cap is None else max(0.0, t_hot - t_hot_cap)
+                key = (-excess, t_hot, q_actual, -n, tc, te)
                 if best is None or key > best:
                     best = key
     if best is None:
         return None
-    t_hot, _, nneg, tc, te = best
+    _, t_hot, _, nneg, tc, te = best
     r = resolved_from_temps(
         spec, gas, tc, te, int(-nneg), n_evap, n_cond, hx_hot, hx_cold, pipe, inv, locked
     )

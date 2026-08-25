@@ -155,7 +155,7 @@ export function warnings_for(gas, resolved, t_hot_K, t_cold_K, uf, step = null) 
   return w;
 }
 
-function bottleneckOf(q_feed, q_evap, q_cond, uf, q) {
+export function bottleneckOf(q_feed, q_evap, q_cond, uf, q, includeCond = true) {
   let kind;
   if (q <= 0) {
     kind = "none";
@@ -163,8 +163,8 @@ function bottleneckOf(q_feed, q_evap, q_cond, uf, q) {
     const parts = [
       ["liquid_feed", q_feed],
       ["evap_HX", q_evap],
-      ["cond_HX", q_cond],
     ];
+    if (includeCond) parts.push(["cond_HX", q_cond]);
     kind = parts.reduce((a, b) => (b[1] < a[1] ? b : a))[0];
     if (kind === "liquid_feed" && uf < 0.85) kind = "cfhe";
   }
@@ -238,11 +238,11 @@ export function evaluate_step(resolved, t_hot_K, t_cold_K, step = null) {
     resolved,
     t_hot_K,
     t_cold_K,
-    q_feed: round(q_feed, 4),
-    q_evap_hx: round(q_evap, 4),
-    q_cond_hx: round(q_cond, 4),
-    q_kj_tick: round(q, 4),
-    useful_frac: round(uf, 4),
+    q_feed,
+    q_evap_hx: q_evap,
+    q_cond_hx: q_cond,
+    q_kj_tick: q,
+    useful_frac: uf,
     warnings: warns,
     bottleneck: bot,
     curve,

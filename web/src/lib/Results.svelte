@@ -96,7 +96,8 @@
     <h2>Resolved steps</h2>
     {#each result.steps as s, i}
       <p>
-        S{i} {s.media}: cond {s.t_cond_C.toFixed(1)} C @ {s.p_cond_kPa.toFixed(0)} kPa,
+        S{i} {s.media}: ports {s.t_hot_C.toFixed(1)} → {s.t_cold_C.toFixed(1)} C,
+        cond {s.t_cond_C.toFixed(1)} C @ {s.p_cond_kPa.toFixed(0)} kPa,
         evap {s.t_evap_C.toFixed(1)} C @ {s.p_evap_kPa.toFixed(0)} kPa,
         CFHE x{s.n_cfhe}, Q {s.q_kj_tick.toFixed(3)}.
         Inventory {s.inventory.mol_min.toFixed(0)}–{s.inventory.mol_max.toFixed(0)} mol.

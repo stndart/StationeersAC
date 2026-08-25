@@ -30,8 +30,12 @@
     <button class="btn ghost" type="button" onclick={onRemove} disabled={!canRemove}>x</button>
   </div>
   <div class="knobs">
+    <Knob label="Condenser T" unit="C" bind:value={step.t_cond_C} />
     <Knob label="Condenser P" unit="kPa" bind:value={step.p_cond_kPa} />
+    <Knob label="Evaporator T" unit="C" bind:value={step.t_evap_C} />
     <Knob label="Evaporator P" unit="kPa" bind:value={step.p_evap_kPa} />
+    <Knob label="Hot port T" unit="C" bind:value={step.t_hot_C} />
+    <Knob label="Cold port T" unit="C" bind:value={step.t_cold_C} />
     <Knob label="CFHE count" bind:value={step.n_cfhe} step="1" min="1" />
     <Knob label="Inventory" unit="mol" bind:value={step.inventory_mol} />
     <Knob label="Evap chambers" bind:value={step.n_evap_chambers} step="1" min="1" />
@@ -40,5 +44,5 @@
     <Knob label="Cold HX loop" unit="kPa" bind:value={step.hx_cold_kPa} />
     <Knob label="Liquid pipe" unit="L" bind:value={step.liquid_pipe_L} />
   </div>
-  <p class="tiny">Empty = optimizer. Filled = locked override.</p>
+  <p class="tiny">Empty = optimizer. T and P lock the same sat axis (T wins if both). Port T locks the coupling.</p>
 </article>

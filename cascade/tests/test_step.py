@@ -7,7 +7,7 @@ import unittest
 from cascade.gases import get_gas
 from cascade.models import StepSpec
 from cascade.optimize import optimize_step
-from cascade.physics import k_from_c
+from cascade.physics import k_from_c, c_from_k
 from cascade.step import evaluate_step
 from cascade.chain import run_cascade
 
@@ -69,6 +69,69 @@ class TestLock(unittest.TestCase):
         self.assertTrue(r.locked["p_evap_kPa"])
         self.assertAlmostEqual(r.p_evap_kPa, p, delta=0.01)
         self.assertAlmostEqual(r.t_evap_K, n2.t_sat(p), delta=0.05)
+
+    def test_locked_t_evap_c_not_rewritten(self) -> None:
+        spec = StepSpec(media="N2", t_evap_C=-150)
+        r = optimize_step(spec, k_from_c(-100), k_from_c(-140))
+        self.assertTrue(r.locked["t_evap_C"])
+        self.assertAlmostEqual(r.t_evap_K, k_from_c(-150), delta=0.05)
+        self.assertFalse(r.locked["p_evap_kPa"])
+
+
+class TestHydrogenChain(unittest.TestCase):
+    def test_sil_n2_h2_at_minus_245_is_h2_evap_not_n2_cond(self) -> None:
+        r = run_cascade(
+            steps=[StepSpec(media="Sil"), StepSpec(media="N2"), StepSpec(media="H2")],
+            t_hot_C=20,
+            t_target_C=-245,
+        )
+        self.assertGreater(r.q_at_target_kj_tick, 1.2)
+        self.assertEqual(r.steps[-1].resolved.media, "H2")
+        self.assertEqual(r.bottleneck.step, 2)
+        self.assertEqual(r.bottleneck.kind, "evap_HX")
+
+    def test_sil_n2_h2_at_minus_246_drop_is_h2_evap(self) -> None:
+        r = run_cascade(
+            steps=[StepSpec(media="Sil"), StepSpec(media="N2"), StepSpec(media="H2")],
+            t_hot_C=20,
+            t_target_C=-246,
+        )
+        self.assertGreater(r.q_at_target_kj_tick, 0.85)
+        self.assertLess(r.q_at_target_kj_tick, 1.1)
+        self.assertEqual(r.bottleneck.step, 2)
+        self.assertEqual(r.bottleneck.kind, "evap_HX")
+
+    def test_two_h2_stages_split_the_window(self) -> None:
+        r = run_cascade(
+            steps=[
+                StepSpec(media="Sil"),
+                StepSpec(media="N2"),
+                StepSpec(media="H2"),
+                StepSpec(media="H2"),
+            ],
+            t_hot_C=20,
+            t_target_C=-245,
+        )
+        warm = r.steps[2]
+        cold = r.steps[3]
+        self.assertGreater(warm.t_hot_K - warm.t_cold_K, 5.0)
+        self.assertGreater(cold.t_hot_K - cold.t_cold_K, 5.0)
+        self.assertGreater(warm.t_cold_K - cold.t_cold_K, 5.0)
+
+    def test_locked_hot_port_on_last_h2(self) -> None:
+        r = run_cascade(
+            steps=[
+                StepSpec(media="Sil"),
+                StepSpec(media="N2"),
+                StepSpec(media="H2"),
+                StepSpec(media="H2", t_hot_C=-230),
+            ],
+            t_hot_C=20,
+            t_target_C=-245,
+        )
+        self.assertGreater(r.q_at_target_kj_tick, 0.0)
+        self.assertAlmostEqual(c_from_k(r.steps[3].t_hot_K), -230.0, delta=0.05)
+        self.assertAlmostEqual(c_from_k(r.steps[2].t_cold_K), -230.0, delta=0.05)
 
 
 class TestChainMinQ(unittest.TestCase):

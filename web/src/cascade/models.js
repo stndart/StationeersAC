@@ -5,6 +5,10 @@ export class StepSpec {
     media,
     p_cond_kPa = null,
     p_evap_kPa = null,
+    t_cond_C = null,
+    t_evap_C = null,
+    t_hot_C = null,
+    t_cold_C = null,
     n_cfhe = null,
     inventory_mol = null,
     n_evap_chambers = null,
@@ -16,6 +20,10 @@ export class StepSpec {
     this.media = media;
     this.p_cond_kPa = p_cond_kPa;
     this.p_evap_kPa = p_evap_kPa;
+    this.t_cond_C = t_cond_C;
+    this.t_evap_C = t_evap_C;
+    this.t_hot_C = t_hot_C;
+    this.t_cold_C = t_cold_C;
     this.n_cfhe = n_cfhe;
     this.inventory_mol = inventory_mol;
     this.n_evap_chambers = n_evap_chambers;
@@ -270,11 +278,11 @@ function stepToDict(s, t_hot_K) {
     inventory_mol: rs.inventory_mol,
     t_hot_C: s.t_hot_K - 273.15,
     t_cold_C: s.t_cold_K - 273.15,
-    q_kj_tick: s.q_kj_tick,
-    q_feed: s.q_feed,
-    q_evap_hx: s.q_evap_hx,
-    q_cond_hx: s.q_cond_hx,
-    useful_frac: s.useful_frac,
+    q_kj_tick: round(s.q_kj_tick, 4),
+    q_feed: round(s.q_feed, 4),
+    q_evap_hx: round(s.q_evap_hx, 4),
+    q_cond_hx: round(s.q_cond_hx, 4),
+    useful_frac: round(s.useful_frac, 4),
     operable: s.operable,
     bottleneck: s.bottleneck.to_dict(),
     locked: rs.locked,

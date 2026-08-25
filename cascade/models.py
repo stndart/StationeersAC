@@ -17,6 +17,10 @@ class StepSpec:
     media: str
     p_cond_kPa: float | None = None
     p_evap_kPa: float | None = None
+    t_cond_C: float | None = None
+    t_evap_C: float | None = None
+    t_hot_C: float | None = None
+    t_cold_C: float | None = None
     n_cfhe: int | None = None
     inventory_mol: float | None = None
     n_evap_chambers: int | None = None
@@ -204,11 +208,11 @@ def _step_to_dict(s: StepEval, t_hot_K: float) -> dict[str, Any]:
         "inventory_mol": rs.inventory_mol,
         "t_hot_C": s.t_hot_K - 273.15,
         "t_cold_C": s.t_cold_K - 273.15,
-        "q_kj_tick": s.q_kj_tick,
-        "q_feed": s.q_feed,
-        "q_evap_hx": s.q_evap_hx,
-        "q_cond_hx": s.q_cond_hx,
-        "useful_frac": s.useful_frac,
+        "q_kj_tick": round(s.q_kj_tick, 4),
+        "q_feed": round(s.q_feed, 4),
+        "q_evap_hx": round(s.q_evap_hx, 4),
+        "q_cond_hx": round(s.q_cond_hx, 4),
+        "useful_frac": round(s.useful_frac, 4),
         "operable": s.operable,
         "bottleneck": s.bottleneck.to_dict(),
         "locked": rs.locked,

@@ -197,6 +197,10 @@
         "locked": {
           "p_cond_kPa": false,
           "p_evap_kPa": false,
+          "t_cond_C": false,
+          "t_evap_C": false,
+          "t_hot_C": false,
+          "t_cold_C": false,
           "n_cfhe": false,
           "inventory_mol": false,
           "n_evap_chambers": false,
