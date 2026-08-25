@@ -28,8 +28,6 @@ const VALVE_ROLES = [
   "liquid_pump",
   "gas_pump",
   "purge",
-  "owv_liquid",
-  "owv_gas",
   "coupling_pr",
 ];
 

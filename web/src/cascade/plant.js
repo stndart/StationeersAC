@@ -130,24 +130,6 @@ function stepValves(i, ev, next_hx_hot) {
       "Dump flash gas or the liquid pipe hits 6 MPa. Vent to a waste tank.",
     ),
     valve(
-      `s${i}-owv-liq`,
-      i,
-      "owv_liquid",
-      "One-Way Valve (liquid)",
-      "toward evaporator",
-      "",
-      "Prevents reverse flow through the CFHE liquid path.",
-    ),
-    valve(
-      `s${i}-owv-gas`,
-      i,
-      "owv_gas",
-      "One-Way Valve (gas)",
-      "toward condenser",
-      "",
-      "Prevents reverse flow through the CFHE gas path.",
-    ),
-    valve(
       `s${i}-coupling`,
       i,
       "coupling_pr",
@@ -243,7 +225,7 @@ function formatAscii(plant) {
     a(`       |  Condensation Chamber pressure = ${c.p_kPa.toFixed(0)} kPa`);
     a(`       |  vapor -> CFHE x${cf.n} (eta ${cf.eta.toFixed(2)})`);
     a(`       |  gas VP ${cf.gas_L_tick.toFixed(3)} L/tick   liquid VP ${cf.liquid_L_tick.toFixed(3)} L/tick`);
-    a(`       |  OWV gas->cond / OWV liquid->evap   purge <= ${P_MAX_LIQUID_KPA.toFixed(0)} kPa`);
+    a(`       |  CFHE one-way (gas->cond, liquid->evap)   purge <= ${P_MAX_LIQUID_KPA.toFixed(0)} kPa`);
     a("       v");
     a(
       `  [ S${i} EVAPORATOR ${String(st.media).padEnd(4)}  ${e.t_C.toFixed(1)} C  ${e.p_kPa.toFixed(0)} kPa  x${e.n_chambers} ]`,

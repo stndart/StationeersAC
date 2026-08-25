@@ -45,8 +45,8 @@
         <div class="tiny">Q {st.q_kj_tick.toFixed(3)} kJ/tick</div>
       </div>
       <div class="chips">
-        <span class="chip"><b>CFHE</b> <span class="set">x{st.cfhe.n} · η {st.cfhe.eta}</span></span>
-        {#each chipValves(st.valves, ["cond_pressure", "liquid_pump", "gas_pump", "purge", "owv_liquid", "owv_gas"]) as v}
+        <span class="chip"><b>CFHE</b> <span class="set">x{st.cfhe.n} · η {st.cfhe.eta} · built-in one-way</span></span>
+        {#each chipValves(st.valves, ["cond_pressure", "liquid_pump", "gas_pump", "purge"]) as v}
           <span class="chip">
             <b>{v.device}</b>
             <span class="set">{fmt(v.setting, v.unit)}</span>

@@ -157,24 +157,6 @@ def _step_valves(i: int, ev: StepEval, next_hx_hot: float | None) -> list[dict[s
             "Dump flash gas or the liquid pipe hits 6 MPa. Vent to a waste tank.",
         ),
         _valve(
-            f"s{i}-owv-liq",
-            i,
-            "owv_liquid",
-            "One-Way Valve (liquid)",
-            "toward evaporator",
-            "",
-            "Prevents reverse flow through the CFHE liquid path.",
-        ),
-        _valve(
-            f"s{i}-owv-gas",
-            i,
-            "owv_gas",
-            "One-Way Valve (gas)",
-            "toward condenser",
-            "",
-            "Prevents reverse flow through the CFHE gas path.",
-        ),
-        _valve(
             f"s{i}-coupling",
             i,
             "coupling_pr",
@@ -268,7 +250,7 @@ def _format_ascii(plant: dict[str, Any]) -> str:
         a(f"       |  Condensation Chamber pressure = {c['p_kPa']:.0f} kPa")
         a(f"       |  vapor -> CFHE x{cf['n']} (eta {cf['eta']:.2f})")
         a(f"       |  gas VP {cf['gas_L_tick']:.3f} L/tick   liquid VP {cf['liquid_L_tick']:.3f} L/tick")
-        a(f"       |  OWV gas->cond / OWV liquid->evap   purge <= {P_MAX_LIQUID_KPA:.0f} kPa")
+        a(f"       |  CFHE one-way (gas->cond, liquid->evap)   purge <= {P_MAX_LIQUID_KPA:.0f} kPa")
         a("       v")
         a(f"  [ S{i} EVAPORATOR {st['media']:<4}  {e['t_C']:.1f} C  {e['p_kPa']:.0f} kPa  x{e['n_chambers']} ]")
         a(f"       |  liquid vol reg {e['liquid_reg_L']:.0f} L, feed {e['feed_L_tick']:.2f} L/tick")
