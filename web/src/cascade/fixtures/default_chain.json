@@ -18,8 +18,8 @@
   "output": {
     "t_hot_C": 40.0,
     "t_target_C": -180.0,
-    "t_coldest_C": -188.14,
-    "t_floor_if_sacrifice_C": -228.14,
+    "t_coldest_C": -188.15,
+    "t_floor_if_sacrifice_C": -228.15,
     "q_at_target_kj_tick": 3.5881,
     "q_at_target_kj_s": 7.1761,
     "dump_radiators": 5,
@@ -31,104 +31,104 @@
       "step": 2
     },
     "curve": {
-      "t_evap_K": 85.00999999999999,
-      "t_break_K": 89.79409317650037,
-      "q_plateau_kj_tick": 3.588069882375283,
+      "t_evap_K": 85.0,
+      "t_break_K": 89.78409344894219,
+      "q_plateau_kj_tick": 3.58807008670664,
       "slope_kj_tick_per_K": 0.75,
       "plateau_limited_by": "cond_HX",
-      "t_evap_C": -188.14,
-      "t_break_C": -183.3559068234996,
+      "t_evap_C": -188.14999999999998,
+      "t_break_C": -183.36590655105778,
       "samples": [
         {
-          "t_C": -188.14,
+          "t_C": -188.14999999999998,
           "q_kj_tick": 0.0
         },
         {
-          "t_C": -178.22086956521738,
+          "t_C": -178.23043478260865,
           "q_kj_tick": 3.5881
         },
         {
-          "t_C": -168.30173913043478,
+          "t_C": -168.3108695652174,
           "q_kj_tick": 3.5881
         },
         {
-          "t_C": -158.38260869565215,
+          "t_C": -158.39130434782606,
           "q_kj_tick": 3.5881
         },
         {
-          "t_C": -148.46347826086955,
+          "t_C": -148.47173913043477,
           "q_kj_tick": 3.5881
         },
         {
-          "t_C": -138.54434782608695,
+          "t_C": -138.55217391304345,
           "q_kj_tick": 3.5881
         },
         {
-          "t_C": -128.62521739130435,
+          "t_C": -128.63260869565215,
           "q_kj_tick": 3.5881
         },
         {
-          "t_C": -118.70608695652174,
+          "t_C": -118.71304347826086,
           "q_kj_tick": 3.5881
         },
         {
-          "t_C": -108.78695652173911,
+          "t_C": -108.79347826086956,
           "q_kj_tick": 3.5881
         },
         {
-          "t_C": -98.86782608695651,
+          "t_C": -98.87391304347824,
           "q_kj_tick": 3.5881
         },
         {
-          "t_C": -88.94869565217391,
+          "t_C": -88.95434782608692,
           "q_kj_tick": 3.5881
         },
         {
-          "t_C": -79.02956521739128,
+          "t_C": -79.03478260869565,
           "q_kj_tick": 3.5881
         },
         {
-          "t_C": -69.1104347826087,
+          "t_C": -69.11521739130433,
           "q_kj_tick": 3.5881
         },
         {
-          "t_C": -59.191304347826076,
+          "t_C": -59.19565217391303,
           "q_kj_tick": 3.5881
         },
         {
-          "t_C": -49.272173913043474,
+          "t_C": -49.27608695652174,
           "q_kj_tick": 3.5881
         },
         {
-          "t_C": -39.35304347826087,
+          "t_C": -39.35652173913044,
           "q_kj_tick": 3.5881
         },
         {
-          "t_C": -29.43391304347827,
+          "t_C": -29.43695652173912,
           "q_kj_tick": 3.5881
         },
         {
-          "t_C": -19.51478260869564,
+          "t_C": -19.517391304347825,
           "q_kj_tick": 3.5881
         },
         {
-          "t_C": -9.595652173913038,
+          "t_C": -9.597826086956502,
           "q_kj_tick": 3.5881
         },
         {
-          "t_C": 0.3234782608695923,
+          "t_C": 0.32173913043482116,
           "q_kj_tick": 3.5881
         },
         {
-          "t_C": 10.242608695652166,
+          "t_C": 10.241304347826144,
           "q_kj_tick": 3.5881
         },
         {
-          "t_C": 20.16173913043474,
+          "t_C": 20.16086956521741,
           "q_kj_tick": 3.5881
         },
         {
-          "t_C": 30.080869565217426,
+          "t_C": 30.080434782608677,
           "q_kj_tick": 3.5881
         },
         {
@@ -141,19 +141,19 @@
       {
         "severity": "soft",
         "code": "cfhe_span",
-        "message": "c_p*dT/L = 1.94; few CFHEs will eat most of the latent heat.",
+        "message": "c_p*dT/L = 1.89; few CFHEs will eat most of the latent heat.",
         "step": 0
       },
       {
         "severity": "soft",
         "code": "p_evap_derate",
-        "message": "Evaporator 61 kPa < 1 atm - chamber HX derates.",
+        "message": "Evaporator 36 kPa < 1 atm - chamber HX derates.",
         "step": 1
       },
       {
         "severity": "soft",
         "code": "cfhe_span",
-        "message": "c_p*dT/L = 1.70; few CFHEs will eat most of the latent heat.",
+        "message": "c_p*dT/L = 1.80; few CFHEs will eat most of the latent heat.",
         "step": 1
       }
     ],
@@ -165,10 +165,10 @@
     "steps": [
       {
         "media": "X",
-        "t_cond_C": 62.0,
-        "t_evap_C": -94.82999999999998,
-        "p_cond_kPa": 3905.890633504071,
-        "p_evap_kPa": 1846.3373549584683,
+        "t_cond_C": 57.0,
+        "t_evap_C": -95.14999999999998,
+        "p_cond_kPa": 4186.3407277758515,
+        "p_evap_kPa": 1864.909811282819,
         "n_cfhe": 1,
         "n_evap_chambers": 1,
         "n_cond_chambers": 1,
@@ -177,16 +177,16 @@
         "liquid_pipe_L": 100.0,
         "inventory_mol": null,
         "t_hot_C": 40.0,
-        "t_cold_C": -87.93409317650037,
-        "q_kj_tick": 5.1719,
-        "q_feed": 5.2074,
-        "q_evap_hx": 5.1719,
-        "q_cond_hx": 16.5,
-        "useful_frac": 0.4166,
+        "t_cold_C": -87.93409344894218,
+        "q_kj_tick": 5.4119,
+        "q_feed": 5.425,
+        "q_evap_hx": 5.4119,
+        "q_cond_hx": 12.75,
+        "useful_frac": 0.434,
         "operable": true,
         "bottleneck": {
           "kind": "evap_HX",
-          "q_kj_tick": 5.1719,
+          "q_kj_tick": 5.4119,
           "lever": "Lower evaporator pressure (more dT) if freeze allows, raise cold-HX loop pressure to >=1 atm, or add an evaporator chamber.",
           "step": 0
         },
@@ -206,116 +206,116 @@
           "liquid_pipe_L": false
         },
         "inventory": {
-          "mol_min": 749.06,
+          "mol_min": 752.02,
           "mol_max": 2500.0,
-          "note": "Keep about 749-2500 mol of X: >=749 mol holds 20 L in the evaporator plus chamber vapor; <=2500 mol stays under 80% of a 100 L liquid pipe. Inventory does not change Q once 20 L is held.",
+          "note": "Keep about 752-2500 mol of X: >=752 mol holds 20 L in the evaporator plus chamber vapor; <=2500 mol stays under 80% of a 100 L liquid pipe. Inventory does not change Q once 20 L is held.",
           "chosen_mol": null,
           "in_band": null
         },
         "curve": {
-          "t_evap_K": 178.32,
-          "t_break_K": 185.26320666666666,
-          "q_plateau_kj_tick": 5.207405,
+          "t_evap_K": 178.0,
+          "t_break_K": 185.23336666666665,
+          "q_plateau_kj_tick": 5.425025,
           "slope_kj_tick_per_K": 0.75,
           "plateau_limited_by": "liquid_feed",
-          "t_evap_C": -94.82999999999998,
-          "t_break_C": -87.88679333333332,
+          "t_evap_C": -95.14999999999998,
+          "t_break_C": -87.91663333333332,
           "samples": [
             {
-              "t_C": -94.82999999999998,
+              "t_C": -95.14999999999998,
               "q_kj_tick": 0.0
             },
             {
-              "t_C": -88.9678260869565,
-              "q_kj_tick": 4.3966
+              "t_C": -89.27391304347825,
+              "q_kj_tick": 4.4071
             },
             {
-              "t_C": -83.10565217391303,
-              "q_kj_tick": 5.2074
+              "t_C": -83.39782608695651,
+              "q_kj_tick": 5.425
             },
             {
-              "t_C": -77.24347826086955,
-              "q_kj_tick": 5.2074
+              "t_C": -77.52173913043475,
+              "q_kj_tick": 5.425
             },
             {
-              "t_C": -71.38130434782607,
-              "q_kj_tick": 5.2074
+              "t_C": -71.64565217391302,
+              "q_kj_tick": 5.425
             },
             {
-              "t_C": -65.5191304347826,
-              "q_kj_tick": 5.2074
+              "t_C": -65.76956521739129,
+              "q_kj_tick": 5.425
             },
             {
-              "t_C": -59.65695652173912,
-              "q_kj_tick": 5.2074
+              "t_C": -59.89347826086956,
+              "q_kj_tick": 5.425
             },
             {
-              "t_C": -53.79478260869564,
-              "q_kj_tick": 5.2074
+              "t_C": -54.017391304347825,
+              "q_kj_tick": 5.425
             },
             {
-              "t_C": -47.93260869565216,
-              "q_kj_tick": 5.2074
+              "t_C": -48.141304347826065,
+              "q_kj_tick": 5.425
             },
             {
-              "t_C": -42.070434782608686,
-              "q_kj_tick": 5.2074
+              "t_C": -42.26521739130433,
+              "q_kj_tick": 5.425
             },
             {
-              "t_C": -36.20826086956521,
-              "q_kj_tick": 5.2074
+              "t_C": -36.3891304347826,
+              "q_kj_tick": 5.425
             },
             {
-              "t_C": -30.34608695652173,
-              "q_kj_tick": 5.2074
+              "t_C": -30.51304347826087,
+              "q_kj_tick": 5.425
             },
             {
-              "t_C": -24.483913043478253,
-              "q_kj_tick": 5.2074
+              "t_C": -24.636956521739137,
+              "q_kj_tick": 5.425
             },
             {
-              "t_C": -18.621739130434776,
-              "q_kj_tick": 5.2074
+              "t_C": -18.760869565217376,
+              "q_kj_tick": 5.425
             },
             {
-              "t_C": -12.759565217391298,
-              "q_kj_tick": 5.2074
+              "t_C": -12.884782608695673,
+              "q_kj_tick": 5.425
             },
             {
-              "t_C": -6.8973913043478206,
-              "q_kj_tick": 5.2074
+              "t_C": -7.0086956521739125,
+              "q_kj_tick": 5.425
             },
             {
-              "t_C": -1.035217391304343,
-              "q_kj_tick": 5.2074
+              "t_C": -1.1326086956521522,
+              "q_kj_tick": 5.425
             },
             {
-              "t_C": 4.826956521739135,
-              "q_kj_tick": 5.2074
+              "t_C": 4.743478260869551,
+              "q_kj_tick": 5.425
             },
             {
-              "t_C": 10.689130434782612,
-              "q_kj_tick": 5.2074
+              "t_C": 10.619565217391312,
+              "q_kj_tick": 5.425
             },
             {
-              "t_C": 16.55130434782609,
-              "q_kj_tick": 5.2074
+              "t_C": 16.495652173913072,
+              "q_kj_tick": 5.425
             },
             {
-              "t_C": 22.413478260869567,
-              "q_kj_tick": 5.2074
+              "t_C": 22.371739130434776,
+              "q_kj_tick": 5.425
             },
             {
-              "t_C": 28.275652173913045,
-              "q_kj_tick": 5.2074
+              "t_C": 28.247826086956536,
+              "q_kj_tick": 5.425
             },
             {
-              "t_C": 34.13782608695652,
-              "q_kj_tick": 5.2074
+              "t_C": 34.12391304347824,
+              "q_kj_tick": 5.425
             },
             {
               "t_C": 40.0,
-              "q_kj_tick": 5.2074
+              "q_kj_tick": 5.425
             }
           ]
         },
@@ -323,7 +323,7 @@
           {
             "severity": "soft",
             "code": "cfhe_span",
-            "message": "c_p*dT/L = 1.94; few CFHEs will eat most of the latent heat.",
+            "message": "c_p*dT/L = 1.89; few CFHEs will eat most of the latent heat.",
             "step": 0
           }
         ]
@@ -331,9 +331,9 @@
       {
         "media": "CH4",
         "t_cond_C": -83.14999999999998,
-        "t_evap_C": -166.54999999999998,
-        "p_cond_kPa": 4688.497677158488,
-        "p_evap_kPa": 61.19627196394751,
+        "t_evap_C": -171.14999999999998,
+        "p_cond_kPa": 4833.4265313957485,
+        "p_evap_kPa": 36.199153713272246,
         "n_cfhe": 2,
         "n_evap_chambers": 1,
         "n_cond_chambers": 1,
@@ -341,13 +341,13 @@
         "hx_cold_kPa": 300.0,
         "liquid_pipe_L": 100.0,
         "inventory_mol": null,
-        "t_hot_C": -87.93409317650037,
-        "t_cold_C": -156.92409317650038,
+        "t_hot_C": -87.93409344894218,
+        "t_cold_C": -156.93409344894218,
         "q_kj_tick": 3.5881,
-        "q_feed": 5.293,
-        "q_evap_hx": 4.3602,
+        "q_feed": 5.2402,
+        "q_evap_hx": 3.8091,
         "q_cond_hx": 3.5881,
-        "useful_frac": 0.8469,
+        "useful_frac": 0.8384,
         "operable": true,
         "bottleneck": {
           "kind": "cond_HX",
@@ -371,111 +371,111 @@
           "liquid_pipe_L": false
         },
         "inventory": {
-          "mol_min": 513.81,
+          "mol_min": 508.54,
           "mol_max": 2500.0,
-          "note": "Keep about 514-2500 mol of CH4: >=514 mol holds 20 L in the evaporator plus chamber vapor; <=2500 mol stays under 80% of a 100 L liquid pipe. Inventory does not change Q once 20 L is held.",
+          "note": "Keep about 509-2500 mol of CH4: >=509 mol holds 20 L in the evaporator plus chamber vapor; <=2500 mol stays under 80% of a 100 L liquid pipe. Inventory does not change Q once 20 L is held.",
           "chosen_mol": null,
           "in_band": null
         },
         "curve": {
-          "t_evap_K": 106.6,
-          "t_break_K": 114.5212054190896,
-          "q_plateau_kj_tick": 3.5880698823752937,
-          "slope_kj_tick_per_K": 0.45297018478125467,
+          "t_evap_K": 102.0,
+          "t_break_K": 115.39114921176562,
+          "q_plateau_kj_tick": 3.588070086706651,
+          "slope_kj_tick_per_K": 0.267943402762933,
           "plateau_limited_by": "cond_HX",
-          "t_evap_C": -166.54999999999998,
-          "t_break_C": -158.62879458091038,
+          "t_evap_C": -171.14999999999998,
+          "t_break_C": -157.75885078823435,
           "samples": [
             {
-              "t_C": -166.54999999999998,
+              "t_C": -171.14999999999998,
               "q_kj_tick": 0.0
             },
             {
-              "t_C": -157.5695652173913,
+              "t_C": -161.96956521739128,
+              "q_kj_tick": 2.4598
+            },
+            {
+              "t_C": -152.78913043478258,
               "q_kj_tick": 3.5881
             },
             {
-              "t_C": -148.5891304347826,
+              "t_C": -143.60869565217388,
               "q_kj_tick": 3.5881
             },
             {
-              "t_C": -139.6086956521739,
+              "t_C": -134.4282608695652,
               "q_kj_tick": 3.5881
             },
             {
-              "t_C": -130.6282608695652,
+              "t_C": -125.24782608695651,
               "q_kj_tick": 3.5881
             },
             {
-              "t_C": -121.64782608695651,
+              "t_C": -116.06739130434781,
               "q_kj_tick": 3.5881
             },
             {
-              "t_C": -112.6673913043478,
+              "t_C": -106.88695652173914,
               "q_kj_tick": 3.5881
             },
             {
-              "t_C": -103.68695652173912,
+              "t_C": -97.70652173913044,
               "q_kj_tick": 3.5881
             },
             {
-              "t_C": -94.70652173913044,
+              "t_C": -88.52608695652174,
               "q_kj_tick": 3.5881
             },
             {
-              "t_C": -85.72608695652173,
+              "t_C": -79.34565217391304,
               "q_kj_tick": 3.5881
             },
             {
-              "t_C": -76.74565217391302,
+              "t_C": -70.16521739130434,
               "q_kj_tick": 3.5881
             },
             {
-              "t_C": -67.76521739130436,
+              "t_C": -60.98478260869564,
               "q_kj_tick": 3.5881
             },
             {
-              "t_C": -58.78478260869565,
+              "t_C": -51.80434782608694,
               "q_kj_tick": 3.5881
             },
             {
-              "t_C": -49.80434782608694,
+              "t_C": -42.62391304347827,
               "q_kj_tick": 3.5881
             },
             {
-              "t_C": -40.82391304347826,
+              "t_C": -33.44347826086957,
               "q_kj_tick": 3.5881
             },
             {
-              "t_C": -31.843478260869574,
+              "t_C": -24.26304347826087,
               "q_kj_tick": 3.5881
             },
             {
-              "t_C": -22.863043478260863,
+              "t_C": -15.082608695652198,
               "q_kj_tick": 3.5881
             },
             {
-              "t_C": -13.882608695652152,
+              "t_C": -5.902173913043498,
               "q_kj_tick": 3.5881
             },
             {
-              "t_C": -4.902173913043498,
+              "t_C": 3.2782608695652016,
               "q_kj_tick": 3.5881
             },
             {
-              "t_C": 4.078260869565213,
+              "t_C": 12.458695652173901,
               "q_kj_tick": 3.5881
             },
             {
-              "t_C": 13.058695652173924,
+              "t_C": 21.6391304347826,
               "q_kj_tick": 3.5881
             },
             {
-              "t_C": 22.039130434782578,
-              "q_kj_tick": 3.5881
-            },
-            {
-              "t_C": 31.01956521739129,
+              "t_C": 30.8195652173913,
               "q_kj_tick": 3.5881
             },
             {
@@ -488,23 +488,23 @@
           {
             "severity": "soft",
             "code": "p_evap_derate",
-            "message": "Evaporator 61 kPa < 1 atm - chamber HX derates.",
+            "message": "Evaporator 36 kPa < 1 atm - chamber HX derates.",
             "step": 1
           },
           {
             "severity": "soft",
             "code": "cfhe_span",
-            "message": "c_p*dT/L = 1.70; few CFHEs will eat most of the latent heat.",
+            "message": "c_p*dT/L = 1.80; few CFHEs will eat most of the latent heat.",
             "step": 1
           }
         ]
       },
       {
         "media": "N2",
-        "t_cond_C": -152.14,
-        "t_evap_C": -188.14,
-        "p_cond_kPa": 514.5352370296688,
-        "p_evap_kPa": 142.81586995688247,
+        "t_cond_C": -152.14999999999998,
+        "t_evap_C": -188.14999999999998,
+        "p_cond_kPa": 783.9898431819418,
+        "p_evap_kPa": 158.29256530609757,
         "n_cfhe": 6,
         "n_evap_chambers": 1,
         "n_cond_chambers": 1,
@@ -512,11 +512,11 @@
         "hx_cold_kPa": 300.0,
         "liquid_pipe_L": 100.0,
         "inventory_mol": null,
-        "t_hot_C": -156.92409317650038,
+        "t_hot_C": -156.93409344894218,
         "t_cold_C": -180.0,
         "q_kj_tick": 3.5881,
         "q_feed": 3.5881,
-        "q_evap_hx": 6.105,
+        "q_evap_hx": 6.1125,
         "q_cond_hx": 3.5881,
         "useful_frac": 0.9989,
         "operable": true,
@@ -542,111 +542,111 @@
           "liquid_pipe_L": false
         },
         "inventory": {
-          "mol_min": 615.12,
+          "mol_min": 619.51,
           "mol_max": 2873.56,
-          "note": "Keep about 615-2874 mol of N2: >=615 mol holds 20 L in the evaporator plus chamber vapor; <=2874 mol stays under 80% of a 100 L liquid pipe. Inventory does not change Q once 20 L is held.",
+          "note": "Keep about 620-2874 mol of N2: >=620 mol holds 20 L in the evaporator plus chamber vapor; <=2874 mol stays under 80% of a 100 L liquid pipe. Inventory does not change Q once 20 L is held.",
           "chosen_mol": null,
           "in_band": null
         },
         "curve": {
-          "t_evap_K": 85.00999999999999,
-          "t_break_K": 89.79409317650037,
-          "q_plateau_kj_tick": 3.588069882375283,
+          "t_evap_K": 85.0,
+          "t_break_K": 89.78409344894219,
+          "q_plateau_kj_tick": 3.58807008670664,
           "slope_kj_tick_per_K": 0.75,
           "plateau_limited_by": "cond_HX",
-          "t_evap_C": -188.14,
-          "t_break_C": -183.3559068234996,
+          "t_evap_C": -188.14999999999998,
+          "t_break_C": -183.36590655105778,
           "samples": [
             {
-              "t_C": -188.14,
+              "t_C": -188.14999999999998,
               "q_kj_tick": 0.0
             },
             {
-              "t_C": -178.22086956521738,
+              "t_C": -178.23043478260865,
               "q_kj_tick": 3.5881
             },
             {
-              "t_C": -168.30173913043478,
+              "t_C": -168.3108695652174,
               "q_kj_tick": 3.5881
             },
             {
-              "t_C": -158.38260869565215,
+              "t_C": -158.39130434782606,
               "q_kj_tick": 3.5881
             },
             {
-              "t_C": -148.46347826086955,
+              "t_C": -148.47173913043477,
               "q_kj_tick": 3.5881
             },
             {
-              "t_C": -138.54434782608695,
+              "t_C": -138.55217391304345,
               "q_kj_tick": 3.5881
             },
             {
-              "t_C": -128.62521739130435,
+              "t_C": -128.63260869565215,
               "q_kj_tick": 3.5881
             },
             {
-              "t_C": -118.70608695652174,
+              "t_C": -118.71304347826086,
               "q_kj_tick": 3.5881
             },
             {
-              "t_C": -108.78695652173911,
+              "t_C": -108.79347826086956,
               "q_kj_tick": 3.5881
             },
             {
-              "t_C": -98.86782608695651,
+              "t_C": -98.87391304347824,
               "q_kj_tick": 3.5881
             },
             {
-              "t_C": -88.94869565217391,
+              "t_C": -88.95434782608692,
               "q_kj_tick": 3.5881
             },
             {
-              "t_C": -79.02956521739128,
+              "t_C": -79.03478260869565,
               "q_kj_tick": 3.5881
             },
             {
-              "t_C": -69.1104347826087,
+              "t_C": -69.11521739130433,
               "q_kj_tick": 3.5881
             },
             {
-              "t_C": -59.191304347826076,
+              "t_C": -59.19565217391303,
               "q_kj_tick": 3.5881
             },
             {
-              "t_C": -49.272173913043474,
+              "t_C": -49.27608695652174,
               "q_kj_tick": 3.5881
             },
             {
-              "t_C": -39.35304347826087,
+              "t_C": -39.35652173913044,
               "q_kj_tick": 3.5881
             },
             {
-              "t_C": -29.43391304347827,
+              "t_C": -29.43695652173912,
               "q_kj_tick": 3.5881
             },
             {
-              "t_C": -19.51478260869564,
+              "t_C": -19.517391304347825,
               "q_kj_tick": 3.5881
             },
             {
-              "t_C": -9.595652173913038,
+              "t_C": -9.597826086956502,
               "q_kj_tick": 3.5881
             },
             {
-              "t_C": 0.3234782608695923,
+              "t_C": 0.32173913043482116,
               "q_kj_tick": 3.5881
             },
             {
-              "t_C": 10.242608695652166,
+              "t_C": 10.241304347826144,
               "q_kj_tick": 3.5881
             },
             {
-              "t_C": 20.16173913043474,
+              "t_C": 20.16086956521741,
               "q_kj_tick": 3.5881
             },
             {
-              "t_C": 30.080869565217426,
+              "t_C": 30.080434782608677,
               "q_kj_tick": 3.5881
             },
             {
@@ -686,22 +686,22 @@
           "media": "X",
           "name": "Pollutant",
           "operable": true,
-          "q_kj_tick": 5.171930117624711,
+          "q_kj_tick": 5.411929913293349,
           "bottleneck": {
             "kind": "evap_HX",
-            "q_kj_tick": 5.1719,
+            "q_kj_tick": 5.4119,
             "lever": "Lower evaporator pressure (more dT) if freeze allows, raise cold-HX loop pressure to >=1 atm, or add an evaporator chamber.",
             "step": 0
           },
           "condenser": {
-            "t_C": 62.0,
-            "p_kPa": 3905.9,
+            "t_C": 57.0,
+            "p_kPa": 4186.3,
             "n_chambers": 1,
             "hx_loop_kPa": 300.0
           },
           "evaporator": {
-            "t_C": -94.83,
-            "p_kPa": 1846.3,
+            "t_C": -95.15,
+            "p_kPa": 1864.9,
             "n_chambers": 1,
             "hx_loop_kPa": 300.0,
             "liquid_reg_L": 20.0,
@@ -712,14 +712,14 @@
             "eta": 0.7,
             "mol_tick": 6.25,
             "liquid_L_tick": 0.25,
-            "gas_L_tick": 5.019
+            "gas_L_tick": 4.96
           },
           "inventory": {
-            "mol_min": 749.06,
+            "mol_min": 752.02,
             "mol_max": 2500.0,
             "chosen_mol": null,
             "in_band": null,
-            "note": "Keep about 749-2500 mol of X: >=749 mol holds 20 L in the evaporator plus chamber vapor; <=2500 mol stays under 80% of a 100 L liquid pipe. Inventory does not change Q once 20 L is held.",
+            "note": "Keep about 752-2500 mol of X: >=752 mol holds 20 L in the evaporator plus chamber vapor; <=2500 mol stays under 80% of a 100 L liquid pipe. Inventory does not change Q once 20 L is held.",
             "liquid_pipe_L": 100.0
           },
           "ports": {
@@ -749,9 +749,9 @@
               "step": 0,
               "role": "cond_pressure",
               "device": "Condensation Chamber",
-              "setting": 3905.9,
+              "setting": 4186.3,
               "unit": "kPa",
-              "note": "In-game pressure setting. T_sat ≈ 62.0 C. x1 chamber(s)."
+              "note": "In-game pressure setting. T_sat ≈ 57.0 C. x1 chamber(s)."
             },
             {
               "id": "s0-evap-liq",
@@ -767,9 +767,9 @@
               "step": 0,
               "role": "evap_backpressure",
               "device": "Pressure Regulator (evaporator gas outlet)",
-              "setting": 1846.3,
+              "setting": 1864.9,
               "unit": "kPa",
-              "note": "Holds T_evap ≈ -94.8 C. x1 chamber(s)."
+              "note": "Holds T_evap ≈ -95.1 C. x1 chamber(s)."
             },
             {
               "id": "s0-liq-pump",
@@ -785,9 +785,9 @@
               "step": 0,
               "role": "gas_pump",
               "device": "Volume Pump (gas CFHE side)",
-              "setting": 5.019,
+              "setting": 4.96,
               "unit": "L/tick",
-              "note": "Same 6.250 mol/tick at evap -94.8 C / 1846 kPa so CFHE mol-flows match."
+              "note": "Same 6.250 mol/tick at evap -95.1 C / 1865 kPa so CFHE mol-flows match."
             },
             {
               "id": "s0-purge",
@@ -814,7 +814,7 @@
           "media": "CH4",
           "name": "Methane / Volatiles",
           "operable": true,
-          "q_kj_tick": 3.5880698823752937,
+          "q_kj_tick": 3.588070086706651,
           "bottleneck": {
             "kind": "cond_HX",
             "q_kj_tick": 3.5881,
@@ -823,13 +823,13 @@
           },
           "condenser": {
             "t_C": -83.15,
-            "p_kPa": 4688.5,
+            "p_kPa": 4833.4,
             "n_chambers": 1,
             "hx_loop_kPa": 300.0
           },
           "evaporator": {
-            "t_C": -166.55,
-            "p_kPa": 61.2,
+            "t_C": -171.15,
+            "p_kPa": 36.2,
             "n_chambers": 1,
             "hx_loop_kPa": 300.0,
             "liquid_reg_L": 20.0,
@@ -840,22 +840,22 @@
             "eta": 0.91,
             "mol_tick": 6.25,
             "liquid_L_tick": 0.25,
-            "gas_L_tick": 90.52
+            "gas_L_tick": 146.425
           },
           "inventory": {
-            "mol_min": 513.81,
+            "mol_min": 508.54,
             "mol_max": 2500.0,
             "chosen_mol": null,
             "in_band": null,
-            "note": "Keep about 514-2500 mol of CH4: >=514 mol holds 20 L in the evaporator plus chamber vapor; <=2500 mol stays under 80% of a 100 L liquid pipe. Inventory does not change Q once 20 L is held.",
+            "note": "Keep about 509-2500 mol of CH4: >=509 mol holds 20 L in the evaporator plus chamber vapor; <=2500 mol stays under 80% of a 100 L liquid pipe. Inventory does not change Q once 20 L is held.",
             "liquid_pipe_L": 100.0
           },
           "ports": {
             "t_hot_C": -87.93,
-            "t_cold_C": -156.92
+            "t_cold_C": -156.93
           },
           "coupling_out": {
-            "t_C": -156.92,
+            "t_C": -156.93,
             "p_kPa": 300.0,
             "media": {
               "symbol": "He",
@@ -877,7 +877,7 @@
               "step": 1,
               "role": "cond_pressure",
               "device": "Condensation Chamber",
-              "setting": 4688.5,
+              "setting": 4833.4,
               "unit": "kPa",
               "note": "In-game pressure setting. T_sat ≈ -83.1 C. x1 chamber(s)."
             },
@@ -895,9 +895,9 @@
               "step": 1,
               "role": "evap_backpressure",
               "device": "Pressure Regulator (evaporator gas outlet)",
-              "setting": 61.2,
+              "setting": 36.2,
               "unit": "kPa",
-              "note": "Holds T_evap ≈ -166.5 C. x1 chamber(s)."
+              "note": "Holds T_evap ≈ -171.1 C. x1 chamber(s)."
             },
             {
               "id": "s1-liq-pump",
@@ -913,9 +913,9 @@
               "step": 1,
               "role": "gas_pump",
               "device": "Volume Pump (gas CFHE side)",
-              "setting": 90.52,
+              "setting": 146.425,
               "unit": "L/tick",
-              "note": "Same 6.250 mol/tick at evap -166.5 C / 61 kPa so CFHE mol-flows match."
+              "note": "Same 6.250 mol/tick at evap -171.1 C / 36 kPa so CFHE mol-flows match."
             },
             {
               "id": "s1-purge",
@@ -942,7 +942,7 @@
           "media": "N2",
           "name": "Nitrogen",
           "operable": true,
-          "q_kj_tick": 3.588069882375283,
+          "q_kj_tick": 3.58807008670664,
           "bottleneck": {
             "kind": "cond_HX",
             "q_kj_tick": 3.5881,
@@ -950,14 +950,14 @@
             "step": 2
           },
           "condenser": {
-            "t_C": -152.14,
-            "p_kPa": 514.5,
+            "t_C": -152.15,
+            "p_kPa": 784.0,
             "n_chambers": 1,
             "hx_loop_kPa": 300.0
           },
           "evaporator": {
-            "t_C": -188.14,
-            "p_kPa": 142.8,
+            "t_C": -188.15,
+            "p_kPa": 158.3,
             "n_chambers": 1,
             "hx_loop_kPa": 300.0,
             "liquid_reg_L": 20.0,
@@ -968,18 +968,18 @@
             "eta": 0.9993,
             "mol_tick": 7.1839,
             "liquid_L_tick": 0.25,
-            "gas_L_tick": 35.554
+            "gas_L_tick": 32.074
           },
           "inventory": {
-            "mol_min": 615.12,
+            "mol_min": 619.51,
             "mol_max": 2873.56,
             "chosen_mol": null,
             "in_band": null,
-            "note": "Keep about 615-2874 mol of N2: >=615 mol holds 20 L in the evaporator plus chamber vapor; <=2874 mol stays under 80% of a 100 L liquid pipe. Inventory does not change Q once 20 L is held.",
+            "note": "Keep about 620-2874 mol of N2: >=620 mol holds 20 L in the evaporator plus chamber vapor; <=2874 mol stays under 80% of a 100 L liquid pipe. Inventory does not change Q once 20 L is held.",
             "liquid_pipe_L": 100.0
           },
           "ports": {
-            "t_hot_C": -156.92,
+            "t_hot_C": -156.93,
             "t_cold_C": -180.0
           },
           "coupling_out": {
@@ -1005,7 +1005,7 @@
               "step": 2,
               "role": "cond_pressure",
               "device": "Condensation Chamber",
-              "setting": 514.5,
+              "setting": 784.0,
               "unit": "kPa",
               "note": "In-game pressure setting. T_sat ≈ -152.1 C. x1 chamber(s)."
             },
@@ -1023,7 +1023,7 @@
               "step": 2,
               "role": "evap_backpressure",
               "device": "Pressure Regulator (evaporator gas outlet)",
-              "setting": 142.8,
+              "setting": 158.3,
               "unit": "kPa",
               "note": "Holds T_evap ≈ -188.1 C. x1 chamber(s)."
             },
@@ -1041,9 +1041,9 @@
               "step": 2,
               "role": "gas_pump",
               "device": "Volume Pump (gas CFHE side)",
-              "setting": 35.554,
+              "setting": 32.074,
               "unit": "L/tick",
-              "note": "Same 7.184 mol/tick at evap -188.1 C / 143 kPa so CFHE mol-flows match."
+              "note": "Same 7.184 mol/tick at evap -188.1 C / 158 kPa so CFHE mol-flows match."
             },
             {
               "id": "s2-purge",
@@ -1093,9 +1093,9 @@
           "step": 0,
           "role": "cond_pressure",
           "device": "Condensation Chamber",
-          "setting": 3905.9,
+          "setting": 4186.3,
           "unit": "kPa",
-          "note": "In-game pressure setting. T_sat ≈ 62.0 C. x1 chamber(s)."
+          "note": "In-game pressure setting. T_sat ≈ 57.0 C. x1 chamber(s)."
         },
         {
           "id": "s0-evap-liq",
@@ -1111,9 +1111,9 @@
           "step": 0,
           "role": "evap_backpressure",
           "device": "Pressure Regulator (evaporator gas outlet)",
-          "setting": 1846.3,
+          "setting": 1864.9,
           "unit": "kPa",
-          "note": "Holds T_evap ≈ -94.8 C. x1 chamber(s)."
+          "note": "Holds T_evap ≈ -95.1 C. x1 chamber(s)."
         },
         {
           "id": "s0-liq-pump",
@@ -1129,9 +1129,9 @@
           "step": 0,
           "role": "gas_pump",
           "device": "Volume Pump (gas CFHE side)",
-          "setting": 5.019,
+          "setting": 4.96,
           "unit": "L/tick",
-          "note": "Same 6.250 mol/tick at evap -94.8 C / 1846 kPa so CFHE mol-flows match."
+          "note": "Same 6.250 mol/tick at evap -95.1 C / 1865 kPa so CFHE mol-flows match."
         },
         {
           "id": "s0-purge",
@@ -1156,7 +1156,7 @@
           "step": 1,
           "role": "cond_pressure",
           "device": "Condensation Chamber",
-          "setting": 4688.5,
+          "setting": 4833.4,
           "unit": "kPa",
           "note": "In-game pressure setting. T_sat ≈ -83.1 C. x1 chamber(s)."
         },
@@ -1174,9 +1174,9 @@
           "step": 1,
           "role": "evap_backpressure",
           "device": "Pressure Regulator (evaporator gas outlet)",
-          "setting": 61.2,
+          "setting": 36.2,
           "unit": "kPa",
-          "note": "Holds T_evap ≈ -166.5 C. x1 chamber(s)."
+          "note": "Holds T_evap ≈ -171.1 C. x1 chamber(s)."
         },
         {
           "id": "s1-liq-pump",
@@ -1192,9 +1192,9 @@
           "step": 1,
           "role": "gas_pump",
           "device": "Volume Pump (gas CFHE side)",
-          "setting": 90.52,
+          "setting": 146.425,
           "unit": "L/tick",
-          "note": "Same 6.250 mol/tick at evap -166.5 C / 61 kPa so CFHE mol-flows match."
+          "note": "Same 6.250 mol/tick at evap -171.1 C / 36 kPa so CFHE mol-flows match."
         },
         {
           "id": "s1-purge",
@@ -1219,7 +1219,7 @@
           "step": 2,
           "role": "cond_pressure",
           "device": "Condensation Chamber",
-          "setting": 514.5,
+          "setting": 784.0,
           "unit": "kPa",
           "note": "In-game pressure setting. T_sat ≈ -152.1 C. x1 chamber(s)."
         },
@@ -1237,7 +1237,7 @@
           "step": 2,
           "role": "evap_backpressure",
           "device": "Pressure Regulator (evaporator gas outlet)",
-          "setting": 142.8,
+          "setting": 158.3,
           "unit": "kPa",
           "note": "Holds T_evap ≈ -188.1 C. x1 chamber(s)."
         },
@@ -1255,9 +1255,9 @@
           "step": 2,
           "role": "gas_pump",
           "device": "Volume Pump (gas CFHE side)",
-          "setting": 35.554,
+          "setting": 32.074,
           "unit": "L/tick",
-          "note": "Same 7.184 mol/tick at evap -188.1 C / 143 kPa so CFHE mol-flows match."
+          "note": "Same 7.184 mol/tick at evap -188.1 C / 158 kPa so CFHE mol-flows match."
         },
         {
           "id": "s2-purge",
@@ -1278,7 +1278,7 @@
           "note": "Keep ≥1 atm or chamber HX derates."
         }
       ],
-      "ascii": "Stationeers cascade  --  end setup (devices + valves)\n========================================================\nDump 40.0 C room  ->  load -180.0 C\n\n  [40 C ROOM]\n       |  dump PR 300 kPa   gas X\n       |  convection radiators x5  (pipe ~55 C, dT 15 K)\n       v\n  [ S0 CONDENSER  X     62.0 C  3906 kPa  x1 ]\n       |  Condensation Chamber pressure = 3906 kPa\n       |  vapor -> CFHE x1 (eta 0.70)\n       |  gas VP 5.019 L/tick   liquid VP 0.250 L/tick\n       |  CFHE one-way (gas->cond, liquid->evap)   purge <= 6000 kPa\n       v\n  [ S0 EVAPORATOR X     -94.8 C  1846 kPa  x1 ]\n       |  liquid vol reg 20 L, feed 0.25 L/tick\n       |  evap gas PR 1846 kPa\n       |  coupling PR 300 kPa  @ -87.9 C   gas He\n       v\n  [ S1 CONDENSER  CH4   -83.2 C  4688 kPa  x1 ]\n       |  Condensation Chamber pressure = 4688 kPa\n       |  vapor -> CFHE x2 (eta 0.91)\n       |  gas VP 90.520 L/tick   liquid VP 0.250 L/tick\n       |  CFHE one-way (gas->cond, liquid->evap)   purge <= 6000 kPa\n       v\n  [ S1 EVAPORATOR CH4   -166.6 C  61 kPa  x1 ]\n       |  liquid vol reg 20 L, feed 0.25 L/tick\n       |  evap gas PR 61 kPa\n       |  coupling PR 300 kPa  @ -156.9 C   gas He\n       v\n  [ S2 CONDENSER  N2    -152.1 C  514 kPa  x1 ]\n       |  Condensation Chamber pressure = 514 kPa\n       |  vapor -> CFHE x6 (eta 1.00)\n       |  gas VP 35.554 L/tick   liquid VP 0.250 L/tick\n       |  CFHE one-way (gas->cond, liquid->evap)   purge <= 6000 kPa\n       v\n  [ S2 EVAPORATOR N2    -188.1 C  143 kPa  x1 ]\n       |  liquid vol reg 20 L, feed 0.25 L/tick\n       |  evap gas PR 143 kPa\n       |  coupling PR 300 kPa  @ -180.0 C   gas He\n       v\n  [ LOAD  -180.0 C ]\n\nValve list:\n  - Pressure Regulator (dump loop): 300.0 kPa\n      Pipe convection radiators on one gas pipe. Suggested media: X.\n  - Pipe Convection Radiator: 5 count\n      Sized at 15 K over room, pipe >=1 atm both sides. Auto-sized so dump is not the bottleneck.\n  - S0 Condensation Chamber: 3905.9 kPa\n      In-game pressure setting. T_sat ≈ 62.0 C. x1 chamber(s).\n  - S0 Evaporation Chamber liquid volume regulator: 20.0 L\n      Hold 20 L. Internal feed 0.25 L/tick (1 x 0.25 L/tick).\n  - S0 Pressure Regulator (evaporator gas outlet): 1846.3 kPa\n      Holds T_evap ≈ -94.8 C. x1 chamber(s).\n  - S0 Volume Pump (liquid CFHE side): 0.25 L/tick\n      Match chamber liquid feed. 6.250 mol/tick of X.\n  - S0 Volume Pump (gas CFHE side): 5.019 L/tick\n      Same 6.250 mol/tick at evap -94.8 C / 1846 kPa so CFHE mol-flows match.\n  - S0 Pressure Relief Valve (liquid line flash purge): 6000.0 kPa\n      Dump flash gas or the liquid pipe hits 6 MPa. Vent to a waste tank.\n  - S0 Pressure Regulator (cold HX / coupling loop): 300.0 kPa\n      Keep ≥1 atm or chamber HX derates.\n  - S1 Condensation Chamber: 4688.5 kPa\n      In-game pressure setting. T_sat ≈ -83.1 C. x1 chamber(s).\n  - S1 Evaporation Chamber liquid volume regulator: 20.0 L\n      Hold 20 L. Internal feed 0.25 L/tick (1 x 0.25 L/tick).\n  - S1 Pressure Regulator (evaporator gas outlet): 61.2 kPa\n      Holds T_evap ≈ -166.5 C. x1 chamber(s).\n  - S1 Volume Pump (liquid CFHE side): 0.25 L/tick\n      Match chamber liquid feed. 6.250 mol/tick of CH4.\n  - S1 Volume Pump (gas CFHE side): 90.52 L/tick\n      Same 6.250 mol/tick at evap -166.5 C / 61 kPa so CFHE mol-flows match.\n  - S1 Pressure Relief Valve (liquid line flash purge): 6000.0 kPa\n      Dump flash gas or the liquid pipe hits 6 MPa. Vent to a waste tank.\n  - S1 Pressure Regulator (cold HX / coupling loop): 300.0 kPa\n      Keep ≥1 atm or chamber HX derates.\n  - S2 Condensation Chamber: 514.5 kPa\n      In-game pressure setting. T_sat ≈ -152.1 C. x1 chamber(s).\n  - S2 Evaporation Chamber liquid volume regulator: 20.0 L\n      Hold 20 L. Internal feed 0.25 L/tick (1 x 0.25 L/tick).\n  - S2 Pressure Regulator (evaporator gas outlet): 142.8 kPa\n      Holds T_evap ≈ -188.1 C. x1 chamber(s).\n  - S2 Volume Pump (liquid CFHE side): 0.25 L/tick\n      Match chamber liquid feed. 7.184 mol/tick of N2.\n  - S2 Volume Pump (gas CFHE side): 35.554 L/tick\n      Same 7.184 mol/tick at evap -188.1 C / 143 kPa so CFHE mol-flows match.\n  - S2 Pressure Relief Valve (liquid line flash purge): 6000.0 kPa\n      Dump flash gas or the liquid pipe hits 6 MPa. Vent to a waste tank.\n  - S2 Pressure Regulator (cold HX / coupling loop): 300.0 kPa\n      Keep ≥1 atm or chamber HX derates.\n"
+      "ascii": "Stationeers cascade  --  end setup (devices + valves)\n========================================================\nDump 40.0 C room  ->  load -180.0 C\n\n  [40 C ROOM]\n       |  dump PR 300 kPa   gas X\n       |  convection radiators x5  (pipe ~55 C, dT 15 K)\n       v\n  [ S0 CONDENSER  X     57.0 C  4186 kPa  x1 ]\n       |  Condensation Chamber pressure = 4186 kPa\n       |  vapor -> CFHE x1 (eta 0.70)\n       |  gas VP 4.960 L/tick   liquid VP 0.250 L/tick\n       |  CFHE one-way (gas->cond, liquid->evap)   purge <= 6000 kPa\n       v\n  [ S0 EVAPORATOR X     -95.2 C  1865 kPa  x1 ]\n       |  liquid vol reg 20 L, feed 0.25 L/tick\n       |  evap gas PR 1865 kPa\n       |  coupling PR 300 kPa  @ -87.9 C   gas He\n       v\n  [ S1 CONDENSER  CH4   -83.2 C  4833 kPa  x1 ]\n       |  Condensation Chamber pressure = 4833 kPa\n       |  vapor -> CFHE x2 (eta 0.91)\n       |  gas VP 146.425 L/tick   liquid VP 0.250 L/tick\n       |  CFHE one-way (gas->cond, liquid->evap)   purge <= 6000 kPa\n       v\n  [ S1 EVAPORATOR CH4   -171.2 C  36 kPa  x1 ]\n       |  liquid vol reg 20 L, feed 0.25 L/tick\n       |  evap gas PR 36 kPa\n       |  coupling PR 300 kPa  @ -156.9 C   gas He\n       v\n  [ S2 CONDENSER  N2    -152.2 C  784 kPa  x1 ]\n       |  Condensation Chamber pressure = 784 kPa\n       |  vapor -> CFHE x6 (eta 1.00)\n       |  gas VP 32.074 L/tick   liquid VP 0.250 L/tick\n       |  CFHE one-way (gas->cond, liquid->evap)   purge <= 6000 kPa\n       v\n  [ S2 EVAPORATOR N2    -188.2 C  158 kPa  x1 ]\n       |  liquid vol reg 20 L, feed 0.25 L/tick\n       |  evap gas PR 158 kPa\n       |  coupling PR 300 kPa  @ -180.0 C   gas He\n       v\n  [ LOAD  -180.0 C ]\n\nValve list:\n  - Pressure Regulator (dump loop): 300.0 kPa\n      Pipe convection radiators on one gas pipe. Suggested media: X.\n  - Pipe Convection Radiator: 5 count\n      Sized at 15 K over room, pipe >=1 atm both sides. Auto-sized so dump is not the bottleneck.\n  - S0 Condensation Chamber: 4186.3 kPa\n      In-game pressure setting. T_sat ≈ 57.0 C. x1 chamber(s).\n  - S0 Evaporation Chamber liquid volume regulator: 20.0 L\n      Hold 20 L. Internal feed 0.25 L/tick (1 x 0.25 L/tick).\n  - S0 Pressure Regulator (evaporator gas outlet): 1864.9 kPa\n      Holds T_evap ≈ -95.1 C. x1 chamber(s).\n  - S0 Volume Pump (liquid CFHE side): 0.25 L/tick\n      Match chamber liquid feed. 6.250 mol/tick of X.\n  - S0 Volume Pump (gas CFHE side): 4.96 L/tick\n      Same 6.250 mol/tick at evap -95.1 C / 1865 kPa so CFHE mol-flows match.\n  - S0 Pressure Relief Valve (liquid line flash purge): 6000.0 kPa\n      Dump flash gas or the liquid pipe hits 6 MPa. Vent to a waste tank.\n  - S0 Pressure Regulator (cold HX / coupling loop): 300.0 kPa\n      Keep ≥1 atm or chamber HX derates.\n  - S1 Condensation Chamber: 4833.4 kPa\n      In-game pressure setting. T_sat ≈ -83.1 C. x1 chamber(s).\n  - S1 Evaporation Chamber liquid volume regulator: 20.0 L\n      Hold 20 L. Internal feed 0.25 L/tick (1 x 0.25 L/tick).\n  - S1 Pressure Regulator (evaporator gas outlet): 36.2 kPa\n      Holds T_evap ≈ -171.1 C. x1 chamber(s).\n  - S1 Volume Pump (liquid CFHE side): 0.25 L/tick\n      Match chamber liquid feed. 6.250 mol/tick of CH4.\n  - S1 Volume Pump (gas CFHE side): 146.425 L/tick\n      Same 6.250 mol/tick at evap -171.1 C / 36 kPa so CFHE mol-flows match.\n  - S1 Pressure Relief Valve (liquid line flash purge): 6000.0 kPa\n      Dump flash gas or the liquid pipe hits 6 MPa. Vent to a waste tank.\n  - S1 Pressure Regulator (cold HX / coupling loop): 300.0 kPa\n      Keep ≥1 atm or chamber HX derates.\n  - S2 Condensation Chamber: 784.0 kPa\n      In-game pressure setting. T_sat ≈ -152.1 C. x1 chamber(s).\n  - S2 Evaporation Chamber liquid volume regulator: 20.0 L\n      Hold 20 L. Internal feed 0.25 L/tick (1 x 0.25 L/tick).\n  - S2 Pressure Regulator (evaporator gas outlet): 158.3 kPa\n      Holds T_evap ≈ -188.1 C. x1 chamber(s).\n  - S2 Volume Pump (liquid CFHE side): 0.25 L/tick\n      Match chamber liquid feed. 7.184 mol/tick of N2.\n  - S2 Volume Pump (gas CFHE side): 32.074 L/tick\n      Same 7.184 mol/tick at evap -188.1 C / 158 kPa so CFHE mol-flows match.\n  - S2 Pressure Relief Valve (liquid line flash purge): 6000.0 kPa\n      Dump flash gas or the liquid pipe hits 6 MPa. Vent to a waste tank.\n  - S2 Pressure Regulator (cold HX / coupling loop): 300.0 kPa\n      Keep ≥1 atm or chamber HX derates.\n"
     }
   }
 }

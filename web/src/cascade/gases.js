@@ -1,4 +1,4 @@
-/** Gas table and saturation-pressure interpolation. */
+/** Gas table and tuned saturation-pressure curves. */
 
 import { LIQUID_FEED_L_PER_TICK } from "./constants.js";
 
@@ -16,7 +16,8 @@ export class Gas {
     mw,
     boil_100kpa,
     notes,
-    extra_points = [],
+    convexity_start = null,
+    convexity_end = null,
   ) {
     this.name = name;
     this.symbol = symbol;
@@ -30,95 +31,45 @@ export class Gas {
     this.mw = mw;
     this.boil_100kpa = boil_100kpa;
     this.notes = notes;
-    this.extra_points = extra_points;
+    this.convexity_start = convexity_start;
+    this.convexity_end = convexity_end;
   }
 
-  anchors() {
-    /** @type {[number, number][]} */
-    const pts = [];
-    if (this.t_freeze != null && this.p_min_cond != null) {
-      pts.push([this.t_freeze, this.p_min_cond]);
-    }
-    pts.push(...this.extra_points);
-    if (this.boil_100kpa != null) {
-      pts.push([this.boil_100kpa, 100.0]);
-    }
-    if (this.t_crit != null && this.p_crit != null) {
-      pts.push([this.t_crit, this.p_crit]);
-    }
-    pts.sort((a, b) => a[0] - b[0]);
-    /** @type {[number, number][]} */
-    const mono = [];
-    for (const [t, p] of pts) {
-      if (mono.some(([mt]) => Math.abs(t - mt) < 0.5)) continue;
-      if (mono.length && p <= mono[mono.length - 1][1] * 0.98) continue;
-      mono.push([t, p]);
-    }
-    if (mono.length < 2) {
-      throw new Error(`${this.symbol}: need ≥2 saturation anchors`);
-    }
-    return mono;
-  }
-
-  _segment(t) {
-    const a = this.anchors();
-    let t1;
-    let p1;
-    let t2;
-    let p2;
-    if (t <= a[0][0]) {
-      [t1, p1] = a[0];
-      [t2, p2] = a[1];
-    } else if (t >= a[a.length - 1][0]) {
-      [t1, p1] = a[a.length - 2];
-      [t2, p2] = a[a.length - 1];
-    } else {
-      [t1, p1] = a[0];
-      [t2, p2] = a[1];
-      for (let i = 0; i < a.length - 1; i++) {
-        if (a[i][0] <= t && t <= a[i + 1][0]) {
-          [t1, p1] = a[i];
-          [t2, p2] = a[i + 1];
-          break;
-        }
-      }
-    }
-    return [t1, p1, t2, p2];
+  _exponent(t) {
+    const a = this.convexity_start, b = this.convexity_end;
+    if (a == null || b == null) throw new Error(`${this.symbol}: no saturation curve`);
+    // Endpoint tangents preserve invalid-lock diagnostics outside the curve.
+    if (t < 0) return a * t;
+    if (t > 1) return 1 + (2 - b) * (t - 1);
+    return (1 - t) ** 2 * t * a + (1 - t) * t ** 2 * b + t ** 2;
   }
 
   p_sat(t) {
-    const [t1, p1, t2, p2] = this._segment(t);
-    const frac = t2 === t1 ? 0.0 : (t - t1) / (t2 - t1);
-    const logp = Math.log10(p1) + frac * (Math.log10(p2) - Math.log10(p1));
-    return 10.0 ** logp;
+    if (this.t_freeze == null || this.t_crit == null || this.p_min_cond == null || this.p_crit == null) {
+      throw new Error(`${this.symbol}: no saturation curve`);
+    }
+    const x = (t - this.t_freeze) / (this.t_crit - this.t_freeze);
+    return this.p_min_cond * (this.p_crit / this.p_min_cond) ** this._exponent(x);
   }
 
   t_sat(p) {
-    const a = this.anchors();
-    const logp = Math.log10(Math.max(p, 1e-9));
-    let t1;
-    let p1;
-    let t2;
-    let p2;
-    if (logp <= Math.log10(a[0][1])) {
-      [t1, p1] = a[0];
-      [t2, p2] = a[1];
-    } else if (logp >= Math.log10(a[a.length - 1][1])) {
-      [t1, p1] = a[a.length - 2];
-      [t2, p2] = a[a.length - 1];
-    } else {
-      [t1, p1] = a[0];
-      [t2, p2] = a[1];
-      for (let i = 0; i < a.length - 1; i++) {
-        if (a[i][1] <= p && p <= a[i + 1][1]) {
-          [t1, p1] = a[i];
-          [t2, p2] = a[i + 1];
-          break;
-        }
-      }
+    if (this.convexity_start == null || this.convexity_end == null) {
+      throw new Error(`${this.symbol}: no saturation curve`);
     }
-    const frac = (logp - Math.log10(p1)) / (Math.log10(p2) - Math.log10(p1));
-    return t1 + frac * (t2 - t1);
+    const exponent = Math.log(Math.max(p, 1e-9) / this.p_min_cond) / Math.log(this.p_crit / this.p_min_cond);
+    let x;
+    if (exponent < 0) x = exponent / this.convexity_start;
+    else if (exponent > 1) x = 1 + (exponent - 1) / (2 - this.convexity_end);
+    else {
+      let lo = 0, hi = 1;
+      for (let i = 0; i < 52; i++) {
+        const mid = (lo + hi) / 2;
+        if (this._exponent(mid) < exponent) lo = mid;
+        else hi = mid;
+      }
+      x = (lo + hi) / 2;
+    }
+    return this.t_freeze + x * (this.t_crit - this.t_freeze);
   }
 
   mol_per_tick_feed() {
@@ -147,60 +98,64 @@ export const GASES = {
     "N2",
     20.6,
     500,
-    40.01,
+    40.0,
     190.0,
     6.3,
-    6000,
+    6000.0,
     0.0348,
     28.02,
     75.0,
-    "Wiki table + chart.",
-    [[75.0, 100.0]],
+    "Phase curve: zgralewski diagram (2026-04-19).",
+    2.0,
+    1.3655,
   ),
   O2: new Gas(
     "Oxygen",
     "O2",
     21.1,
     800,
-    56.416,
-    162.2,
+    56.0,
+    162.0,
     6.3,
-    6000,
+    6000.0,
     0.03,
     15.99,
     90.0,
-    "Wiki table. Chart extra: 81 K / 250 kPa.",
-    [[81.0, 250.0]],
+    "Phase curve: zgralewski diagram (2026-04-19).",
+    1.6053,
+    1.3421,
   ),
   CH4: new Gas(
     "Methane / Volatiles",
     "CH4",
     20.4,
     1000,
-    81.6,
+    81.0,
     195.0,
     6.3,
-    6000,
+    6000.0,
     0.04,
     16.04,
     112.0,
-    "Chart CH4 matches old Volatiles phase data.",
-    [[91.0, 6.0]],
+    "Phase curve: zgralewski diagram (2026-04-19).",
+    1.5126,
+    1.2842,
   ),
   H2: new Gas(
     "Hydrogen",
     "H2",
     20.4,
     200,
-    15.18,
-    70.06,
+    15.0,
+    70.0,
     6.3,
-    6000,
+    6000.0,
     0.028,
     2.0,
     28.11,
-    "Wiki Module:Gas/data. L=200 J/mol (limited); V_liq=0.028 L/mol. Freeze 15.2 K @ 6.3 kPa, T_crit 70.1 K @ 6 MPa. Condenser must sit below -203 C.",
-    [[28.11, 100.0]],
+    "Phase curve: zgralewski diagram (2026-04-19).",
+    2.0,
+    1.3331,
   ),
   HE: new Gas(
     "Helium",
@@ -221,57 +176,64 @@ export const GASES = {
     "X",
     24.8,
     2000,
-    173.32,
-    425.0,
-    1800,
-    6000,
+    173.0,
+    434.0,
+    1800.0,
+    6000.0,
     0.04,
     64.0,
     null,
-    "Min condensation 1.8 MPa at freeze. Typical stage-1 media.",
-    [[173.0, 1800.0]],
+    "Phase curve: zgralewski diagram (2026-04-19).",
+    1.5508,
+    1.3219,
   ),
   CO2: new Gas(
     "Carbon Dioxide",
     "CO2",
     28.2,
     600,
-    217.82,
-    265.0,
-    517,
-    6000,
+    218.0,
+    266.0,
+    517.0,
+    6000.0,
     0.04,
     44.01,
     null,
-    "T_crit -8 C: cannot dump at +40 C.",
+    "Phase curve: zgralewski diagram (2026-04-19).",
+    1.0709,
+    1.0793,
   ),
   N2O: new Gas(
     "Nitrous Oxide",
     "N2O",
     37.2,
     4000,
-    252.1,
-    430.6,
-    800,
-    2000,
+    251.0,
+    431.0,
+    800.0,
+    2000.0,
     0.026,
     46.0,
     null,
-    "Dumps at +40 C but freeze -21 C.",
+    "Phase curve: zgralewski diagram (2026-04-19).",
+    1.2822,
+    1.216,
   ),
   H2O: new Gas(
     "Water",
     "H2O",
     72.0,
     8000,
-    273.15,
-    643.0,
+    273.0,
+    644.0,
     6.3,
-    6000,
+    6000.0,
     0.018,
     18.01,
     373.15,
-    "Freezes at 0 C.",
+    "Phase curve: zgralewski diagram (2026-04-19).",
+    1.5942,
+    1.2833,
   ),
   SIL: new Gas(
     "Silanol",
@@ -279,13 +241,15 @@ export const GASES = {
     null,
     10000,
     164.0,
-    821.669,
-    516,
-    6000,
+    822.0,
+    516.0,
+    6000.0,
     0.16,
     null,
     null,
-    "Late-game stage-1. Missing SHC — CFHE parasitic assumed 0.",
+    "Phase curve: zgralewski diagram (2026-04-19). Missing thermal properties remain estimates or unavailable.",
+    2.0,
+    1.3887,
   ),
   ALC: new Gas(
     "Alcohol",
@@ -294,12 +258,14 @@ export const GASES = {
     null,
     232.0,
     424.0,
-    6.0,
-    1000,
+    6.3,
+    1000.0,
     null,
     null,
     null,
-    "Chart only. Missing L / V_liq / SHC.",
+    "Phase curve: zgralewski diagram (2026-04-19). Missing thermal properties remain estimates or unavailable.",
+    1.3606,
+    1.2204,
   ),
   HCl: new Gas(
     "Hydrochloric Acid",
@@ -308,40 +274,46 @@ export const GASES = {
     null,
     247.0,
     431.0,
-    6.0,
-    2000,
+    6.3,
+    1000.0,
     null,
     null,
     null,
-    "Chart only. Missing L / V_liq / SHC.",
+    "Phase curve: zgralewski diagram (2026-04-19). Missing thermal properties remain estimates or unavailable.",
+    1.3058,
+    1.214,
   ),
   O3: new Gas(
     "Ozone",
     "O3",
     null,
     null,
-    null,
+    81.0,
     304.0,
+    250.0,
+    6000.0,
     null,
-    6000,
     null,
     null,
-    null,
-    "T_crit 31 C. Cannot dump at +40 C.",
+    "Phase curve: zgralewski diagram (2026-04-19). Missing thermal properties remain estimates or unavailable.",
+    1.8627,
+    1.369,
   ),
   N2H4: new Gas(
     "Hydrazine / Fuel",
     "N2H4",
     null,
     null,
-    null,
+    246.0,
     521.0,
+    6.3,
+    6000.0,
     null,
-    6000,
     null,
     null,
-    null,
-    "Hypergolic / toxic — do not use as AC media.",
+    "Phase curve: zgralewski diagram (2026-04-19). Missing thermal properties remain estimates or unavailable.",
+    1.4565,
+    1.2715,
   ),
 };
 

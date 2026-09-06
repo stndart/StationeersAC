@@ -5,6 +5,7 @@ import { test } from "node:test";
 import { fileURLToPath } from "node:url";
 
 import { meta, runFromBody } from "./api.js";
+import { GASES, get_gas } from "./gases.js";
 
 const dir = dirname(fileURLToPath(import.meta.url));
 
@@ -18,6 +19,36 @@ function assertClose(actual, expected, eps, label) {
     `${label}: ${actual} vs ${expected} (eps ${eps})`,
   );
 }
+
+test("phase curves and inverse match upstream reference samples", () => {
+  for (const row of load("phase_curve.json")) {
+    const gas = get_gas(row.gas);
+    assertClose(gas.p_sat(row.temperature_K), row.pressure_kPa, 1e-8, row.gas);
+    assertClose(gas.t_sat(row.pressure_kPa), row.temperature_K, 1e-8, row.gas);
+  }
+  for (const gas of Object.values(GASES)) {
+    if (gas.convexity_start == null) continue;
+    let previous = 0;
+    for (let i = -1; i <= 101; i++) {
+      const t = gas.t_freeze + (gas.t_crit - gas.t_freeze) * i / 100;
+      const p = gas.p_sat(t);
+      assert.ok(p > previous);
+      assertClose(gas.t_sat(p), t, 1e-8, gas.symbol);
+      previous = p;
+    }
+  }
+});
+
+test("pressure locks outside the phase window remain infeasible", () => {
+  for (const [media, p_evap_kPa, p_cond_kPa, code] of [
+    ["N2", 1, 1000, "freeze"], ["N2O", 1000, 3000, "crit"],
+  ]) {
+    const got = runFromBody({t_hot_C: 20, t_target_C: 0,
+      steps: [{media, p_evap_kPa, p_cond_kPa}]});
+    assert.equal(got.q_at_target_kj_tick, 0);
+    assert.ok(got.warnings.some(w => w.code === code && w.severity === "hard"));
+  }
+});
 
 const VALVE_ROLES = [
   "dump_pr",
@@ -34,6 +65,7 @@ const VALVE_ROLES = [
 test("meta gases and lockable fields match Python", () => {
   const expected = load("meta.json");
   const got = meta();
+  assert.deepEqual(got.gases, expected.gases);
   assert.deepEqual(
     got.gases.map((g) => g.symbol),
     expected.gases.map((g) => g.symbol),
@@ -130,7 +162,7 @@ test("optimizer beats a known feasible coupled chain in kJ/tick", () => {
   // Fixed ports 40 -> 20 -> 0 C, condensers 65/45 C and evaporators
   // 0/-20 C deliver 9.4775. The old search ceiling was only 1.2619.
   assert.ok(got.q_at_target_kj_tick >= 9.4775, `Q=${got.q_at_target_kj_tick}`);
-  assertClose(got.q_at_target_kj_tick, 10.2294, 0.0001, "Python regression Q");
+  assertClose(got.q_at_target_kj_tick, 10.2145, 0.0001, "Python regression Q");
   for (const step of got.steps) {
     assert.equal(step.operable, true);
     assert.equal(step.n_cfhe, 1);

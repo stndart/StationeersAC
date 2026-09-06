@@ -1,4 +1,4 @@
-"""Gas table and saturation-pressure interpolation."""
+"""Gas table and tuned saturation-pressure curves."""
 
 from __future__ import annotations
 
@@ -22,71 +22,46 @@ class Gas:
     mw: float | None  # g/mol
     boil_100kpa: float | None  # K
     notes: str
-    extra_points: tuple[tuple[float, float], ...] = ()
+    convexity_start: float | None = None
+    convexity_end: float | None = None
 
-    def anchors(self) -> list[tuple[float, float]]:
-        pts: list[tuple[float, float]] = []
-        if self.t_freeze is not None and self.p_min_cond is not None:
-            pts.append((self.t_freeze, self.p_min_cond))
-        pts.extend(self.extra_points)
-        if self.boil_100kpa is not None:
-            pts.append((self.boil_100kpa, 100.0))
-        if self.t_crit is not None and self.p_crit is not None:
-            pts.append((self.t_crit, self.p_crit))
-        pts.sort(key=lambda tp: tp[0])
-        mono: list[tuple[float, float]] = []
-        for t, p in pts:
-            if any(abs(t - mt) < 0.5 for mt, _ in mono):
-                continue
-            if mono and p <= mono[-1][1] * 0.98:
-                continue
-            mono.append((t, p))
-        if len(mono) < 2:
-            raise ValueError(f"{self.symbol}: need ≥2 saturation anchors")
-        return mono
-
-    def _segment(self, t: float) -> tuple[float, float, float, float]:
-        a = self.anchors()
-        if t <= a[0][0]:
-            (t1, p1), (t2, p2) = a[0], a[1]
-        elif t >= a[-1][0]:
-            (t1, p1), (t2, p2) = a[-2], a[-1]
-        else:
-            t1, p1 = a[0]
-            t2, p2 = a[1]
-            for i in range(len(a) - 1):
-                if a[i][0] <= t <= a[i + 1][0]:
-                    t1, p1 = a[i]
-                    t2, p2 = a[i + 1]
-                    break
-        return t1, p1, t2, p2
+    def _exponent(self, t: float) -> float:
+        # Endpoint tangents outside [0, 1] preserve invalid-lock diagnostics.
+        a, b = self.convexity_start, self.convexity_end
+        if a is None or b is None:
+            raise ValueError(f"{self.symbol}: no saturation curve")
+        if t < 0:
+            return a * t
+        if t > 1:
+            return 1 + (2 - b) * (t - 1)
+        return (1 - t)**2 * t * a + (1 - t) * t**2 * b + t**2
 
     def p_sat(self, t: float) -> float:
-        """log10(P) linear in T through anchors (chart-style)."""
-        t1, p1, t2, p2 = self._segment(t)
-        frac = 0.0 if t2 == t1 else (t - t1) / (t2 - t1)
-        logp = math.log10(p1) + frac * (math.log10(p2) - math.log10(p1))
-        return 10.0**logp
+        """Tuned diagram curve: K -> kPa. See README for source and limits."""
+        if self.t_freeze is None or self.t_crit is None or self.p_min_cond is None or self.p_crit is None:
+            raise ValueError(f"{self.symbol}: no saturation curve")
+        x = (t - self.t_freeze) / (self.t_crit - self.t_freeze)
+        return self.p_min_cond * (self.p_crit / self.p_min_cond)**self._exponent(x)
 
     def t_sat(self, p: float) -> float:
-        a = self.anchors()
-        logp = math.log10(max(p, 1e-9))
-        if logp <= math.log10(a[0][1]):
-            t1, p1 = a[0]
-            t2, p2 = a[1]
-        elif logp >= math.log10(a[-1][1]):
-            t1, p1 = a[-2]
-            t2, p2 = a[-1]
+        """Invert the monotonic curve; retain out-of-window pressure locks."""
+        if self.convexity_start is None or self.convexity_end is None:
+            raise ValueError(f"{self.symbol}: no saturation curve")
+        exponent = math.log(max(p, 1e-9) / self.p_min_cond) / math.log(self.p_crit / self.p_min_cond)
+        if exponent < 0:
+            x = exponent / self.convexity_start
+        elif exponent > 1:
+            x = 1 + (exponent - 1) / (2 - self.convexity_end)
         else:
-            t1, p1 = a[0]
-            t2, p2 = a[1]
-            for i in range(len(a) - 1):
-                if a[i][1] <= p <= a[i + 1][1]:
-                    t1, p1 = a[i]
-                    t2, p2 = a[i + 1]
-                    break
-        frac = (logp - math.log10(p1)) / (math.log10(p2) - math.log10(p1))
-        return t1 + frac * (t2 - t1)
+            lo, hi = 0.0, 1.0
+            for _ in range(52):
+                mid = (lo + hi) / 2
+                if self._exponent(mid) < exponent:
+                    lo = mid
+                else:
+                    hi = mid
+            x = (lo + hi) / 2
+        return self.t_freeze + x * (self.t_crit - self.t_freeze)
 
     def mol_per_tick_feed(self) -> float:
         if not self.v_liq:
@@ -110,60 +85,64 @@ GASES: dict[str, Gas] = {
         "N2",
         20.6,
         500,
-        40.01,
+        40.0,
         190.0,
         6.3,
-        6000,
+        6000.0,
         0.0348,
         28.02,
         75.0,
-        "Wiki table + chart.",
-        extra_points=((75.0, 100.0),),
+        "Phase curve: zgralewski diagram (2026-04-19).",
+        2.0,
+        1.3655,
     ),
     "O2": Gas(
         "Oxygen",
         "O2",
         21.1,
         800,
-        56.416,
-        162.2,
+        56.0,
+        162.0,
         6.3,
-        6000,
+        6000.0,
         0.03,
         15.99,
         90.0,
-        "Wiki table. Chart extra: 81 K / 250 kPa.",
-        extra_points=((81.0, 250.0),),
+        "Phase curve: zgralewski diagram (2026-04-19).",
+        1.6053,
+        1.3421,
     ),
     "CH4": Gas(
         "Methane / Volatiles",
         "CH4",
         20.4,
         1000,
-        81.6,
+        81.0,
         195.0,
         6.3,
-        6000,
+        6000.0,
         0.04,
         16.04,
         112.0,
-        "Chart CH4 matches old Volatiles phase data.",
-        extra_points=((91.0, 6.0),),
+        "Phase curve: zgralewski diagram (2026-04-19).",
+        1.5126,
+        1.2842,
     ),
     "H2": Gas(
         "Hydrogen",
         "H2",
         20.4,
         200,
-        15.18,
-        70.06,
+        15.0,
+        70.0,
         6.3,
-        6000,
+        6000.0,
         0.028,
         2.0,
         28.11,
-        "Wiki Module:Gas/data. L=200 J/mol (limited); V_liq=0.028 L/mol. Freeze 15.2 K @ 6.3 kPa, T_crit 70.1 K @ 6 MPa. Condenser must sit below -203 C.",
-        extra_points=((28.11, 100.0),),
+        "Phase curve: zgralewski diagram (2026-04-19).",
+        2.0,
+        1.3331,
     ),
     "HE": Gas(
         "Helium",
@@ -184,57 +163,64 @@ GASES: dict[str, Gas] = {
         "X",
         24.8,
         2000,
-        173.32,
-        425.0,
-        1800,
-        6000,
+        173.0,
+        434.0,
+        1800.0,
+        6000.0,
         0.04,
         64.0,
         None,
-        "Min condensation 1.8 MPa at freeze. Typical stage-1 media.",
-        extra_points=((173.0, 1800.0),),
+        "Phase curve: zgralewski diagram (2026-04-19).",
+        1.5508,
+        1.3219,
     ),
     "CO2": Gas(
         "Carbon Dioxide",
         "CO2",
         28.2,
         600,
-        217.82,
-        265.0,
-        517,
-        6000,
+        218.0,
+        266.0,
+        517.0,
+        6000.0,
         0.04,
         44.01,
         None,
-        "T_crit -8 C: cannot dump at +40 C.",
+        "Phase curve: zgralewski diagram (2026-04-19).",
+        1.0709,
+        1.0793,
     ),
     "N2O": Gas(
         "Nitrous Oxide",
         "N2O",
         37.2,
         4000,
-        252.1,
-        430.6,
-        800,
-        2000,
+        251.0,
+        431.0,
+        800.0,
+        2000.0,
         0.026,
         46.0,
         None,
-        "Dumps at +40 C but freeze -21 C.",
+        "Phase curve: zgralewski diagram (2026-04-19).",
+        1.2822,
+        1.216,
     ),
     "H2O": Gas(
         "Water",
         "H2O",
         72.0,
         8000,
-        273.15,
-        643.0,
+        273.0,
+        644.0,
         6.3,
-        6000,
+        6000.0,
         0.018,
         18.01,
         373.15,
-        "Freezes at 0 C.",
+        "Phase curve: zgralewski diagram (2026-04-19).",
+        1.5942,
+        1.2833,
     ),
     "SIL": Gas(
         "Silanol",
@@ -242,13 +228,15 @@ GASES: dict[str, Gas] = {
         None,
         10000,
         164.0,
-        821.669,
-        516,
-        6000,
+        822.0,
+        516.0,
+        6000.0,
         0.16,
         None,
         None,
-        "Late-game stage-1. Missing SHC — CFHE parasitic assumed 0.",
+        "Phase curve: zgralewski diagram (2026-04-19). Missing thermal properties remain estimates or unavailable.",
+        2.0,
+        1.3887,
     ),
     "ALC": Gas(
         "Alcohol",
@@ -257,12 +245,14 @@ GASES: dict[str, Gas] = {
         None,
         232.0,
         424.0,
-        6.0,
-        1000,
+        6.3,
+        1000.0,
         None,
         None,
         None,
-        "Chart only. Missing L / V_liq / SHC.",
+        "Phase curve: zgralewski diagram (2026-04-19). Missing thermal properties remain estimates or unavailable.",
+        1.3606,
+        1.2204,
     ),
     "HCl": Gas(
         "Hydrochloric Acid",
@@ -271,40 +261,46 @@ GASES: dict[str, Gas] = {
         None,
         247.0,
         431.0,
-        6.0,
-        2000,
+        6.3,
+        1000.0,
         None,
         None,
         None,
-        "Chart only. Missing L / V_liq / SHC.",
+        "Phase curve: zgralewski diagram (2026-04-19). Missing thermal properties remain estimates or unavailable.",
+        1.3058,
+        1.214,
     ),
     "O3": Gas(
         "Ozone",
         "O3",
         None,
         None,
-        None,
+        81.0,
         304.0,
+        250.0,
+        6000.0,
         None,
-        6000,
         None,
         None,
-        None,
-        "T_crit 31 C. Cannot dump at +40 C.",
+        "Phase curve: zgralewski diagram (2026-04-19). Missing thermal properties remain estimates or unavailable.",
+        1.8627,
+        1.369,
     ),
     "N2H4": Gas(
         "Hydrazine / Fuel",
         "N2H4",
         None,
         None,
-        None,
+        246.0,
         521.0,
+        6.3,
+        6000.0,
         None,
-        6000,
         None,
         None,
-        None,
-        "Hypergolic / toxic — do not use as AC media.",
+        "Phase curve: zgralewski diagram (2026-04-19). Missing thermal properties remain estimates or unavailable.",
+        1.4565,
+        1.2715,
     ),
 }
 

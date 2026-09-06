@@ -13,10 +13,10 @@ from cascade.chain import run_cascade
 
 
 class TestPsat(unittest.TestCase):
-    def test_n2_boil_near_100kpa(self) -> None:
+    def test_n2_matches_tuned_diagram(self) -> None:
         n2 = get_gas("N2")
         p = n2.p_sat(75.0)
-        self.assertAlmostEqual(p, 100.0, delta=5.0)
+        self.assertAlmostEqual(p, 88.79330149935275, places=8)
 
     def test_alias(self) -> None:
         self.assertEqual(get_gas("pollutant").symbol, "X")
@@ -241,7 +241,7 @@ class TestHydrogenHeliumWiki(unittest.TestCase):
         self.assertTrue(h2.can_refrigerate())
         self.assertAlmostEqual(h2.latent, 200.0)
         self.assertAlmostEqual(h2.v_liq, 0.028)
-        self.assertAlmostEqual(h2.p_sat(28.11), 100.0, delta=5.0)
+        self.assertAlmostEqual(h2.p_sat(28.11), 92.08866822389489, places=8)
 
     def test_helium_is_coupling_only(self) -> None:
         from cascade.plant import stays_vapor

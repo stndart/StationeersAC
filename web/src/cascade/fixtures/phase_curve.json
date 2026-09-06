@@ -1,0 +1,327 @@
+[
+  {
+    "gas": "N2",
+    "temperature_K": 40.0,
+    "pressure_kPa": 6.3
+  },
+  {
+    "gas": "N2",
+    "temperature_K": 77.5,
+    "pressure_kPa": 103.26993049353173
+  },
+  {
+    "gas": "N2",
+    "temperature_K": 115.0,
+    "pressure_kPa": 626.8904464669255
+  },
+  {
+    "gas": "N2",
+    "temperature_K": 152.5,
+    "pressure_kPa": 2119.27122978588
+  },
+  {
+    "gas": "N2",
+    "temperature_K": 190.0,
+    "pressure_kPa": 6000.0
+  },
+  {
+    "gas": "O2",
+    "temperature_K": 56.0,
+    "pressure_kPa": 6.3
+  },
+  {
+    "gas": "O2",
+    "temperature_K": 82.5,
+    "pressure_kPa": 70.04361377748793
+  },
+  {
+    "gas": "O2",
+    "temperature_K": 109.0,
+    "pressure_kPa": 438.03776780552556
+  },
+  {
+    "gas": "O2",
+    "temperature_K": 135.5,
+    "pressure_kPa": 1825.0372836301265
+  },
+  {
+    "gas": "O2",
+    "temperature_K": 162.0,
+    "pressure_kPa": 6000.0
+  },
+  {
+    "gas": "H2",
+    "temperature_K": 15.0,
+    "pressure_kPa": 6.3
+  },
+  {
+    "gas": "H2",
+    "temperature_K": 28.75,
+    "pressure_kPa": 102.19974588917312
+  },
+  {
+    "gas": "H2",
+    "temperature_K": 42.5,
+    "pressure_kPa": 609.7158263161392
+  },
+  {
+    "gas": "H2",
+    "temperature_K": 56.25,
+    "pressure_kPa": 2054.06572646225
+  },
+  {
+    "gas": "H2",
+    "temperature_K": 70.0,
+    "pressure_kPa": 6000.0
+  },
+  {
+    "gas": "X",
+    "temperature_K": 173.0,
+    "pressure_kPa": 1800.0
+  },
+  {
+    "gas": "X",
+    "temperature_K": 238.25,
+    "pressure_kPa": 2718.830719653053
+  },
+  {
+    "gas": "X",
+    "temperature_K": 303.5,
+    "pressure_kPa": 3747.5843173090466
+  },
+  {
+    "gas": "X",
+    "temperature_K": 368.75,
+    "pressure_kPa": 4837.276248115261
+  },
+  {
+    "gas": "X",
+    "temperature_K": 434.0,
+    "pressure_kPa": 6000.0
+  },
+  {
+    "gas": "CO2",
+    "temperature_K": 218.0,
+    "pressure_kPa": 517.0
+  },
+  {
+    "gas": "CO2",
+    "temperature_K": 230.0,
+    "pressure_kPa": 986.7980062219157
+  },
+  {
+    "gas": "CO2",
+    "temperature_K": 242.0,
+    "pressure_kPa": 1844.2079995723757
+  },
+  {
+    "gas": "CO2",
+    "temperature_K": 254.0,
+    "pressure_kPa": 3368.1935301474764
+  },
+  {
+    "gas": "CO2",
+    "temperature_K": 266.0,
+    "pressure_kPa": 6000.0
+  },
+  {
+    "gas": "N2O",
+    "temperature_K": 251.0,
+    "pressure_kPa": 800.0
+  },
+  {
+    "gas": "N2O",
+    "temperature_K": 296.0,
+    "pressure_kPa": 1052.9218357369457
+  },
+  {
+    "gas": "N2O",
+    "temperature_K": 341.0,
+    "pressure_kPa": 1339.1884818544993
+  },
+  {
+    "gas": "N2O",
+    "temperature_K": 386.0,
+    "pressure_kPa": 1655.375111977292
+  },
+  {
+    "gas": "N2O",
+    "temperature_K": 431.0,
+    "pressure_kPa": 2000.0
+  },
+  {
+    "gas": "H2O",
+    "temperature_K": 273.0,
+    "pressure_kPa": 6.3
+  },
+  {
+    "gas": "H2O",
+    "temperature_K": 365.75,
+    "pressure_kPa": 67.99992916873612
+  },
+  {
+    "gas": "H2O",
+    "temperature_K": 458.5,
+    "pressure_kPa": 412.55722640646275
+  },
+  {
+    "gas": "H2O",
+    "temperature_K": 551.25,
+    "pressure_kPa": 1718.267547053037
+  },
+  {
+    "gas": "H2O",
+    "temperature_K": 644.0,
+    "pressure_kPa": 6000.0
+  },
+  {
+    "gas": "CH4",
+    "temperature_K": 81.0,
+    "pressure_kPa": 6.3
+  },
+  {
+    "gas": "CH4",
+    "temperature_K": 109.5,
+    "pressure_kPa": 62.87127621376531
+  },
+  {
+    "gas": "CH4",
+    "temperature_K": 138.0,
+    "pressure_kPa": 384.97758670372485
+  },
+  {
+    "gas": "CH4",
+    "temperature_K": 166.5,
+    "pressure_kPa": 1675.2276882808317
+  },
+  {
+    "gas": "CH4",
+    "temperature_K": 195.0,
+    "pressure_kPa": 6000.0
+  },
+  {
+    "gas": "N2H4",
+    "temperature_K": 246.0,
+    "pressure_kPa": 6.3
+  },
+  {
+    "gas": "N2H4",
+    "temperature_K": 314.75,
+    "pressure_kPa": 59.31696597953268
+  },
+  {
+    "gas": "N2H4",
+    "temperature_K": 383.5,
+    "pressure_kPa": 362.92565867474207
+  },
+  {
+    "gas": "N2H4",
+    "temperature_K": 452.25,
+    "pressure_kPa": 1625.2513349864055
+  },
+  {
+    "gas": "N2H4",
+    "temperature_K": 521.0,
+    "pressure_kPa": 6000.0
+  },
+  {
+    "gas": "ALC",
+    "temperature_K": 232.0,
+    "pressure_kPa": 6.3
+  },
+  {
+    "gas": "ALC",
+    "temperature_K": 280.0,
+    "pressure_kPa": 30.467375165406796
+  },
+  {
+    "gas": "ALC",
+    "temperature_K": 328.0,
+    "pressure_kPa": 114.6814478653817
+  },
+  {
+    "gas": "ALC",
+    "temperature_K": 376.0,
+    "pressure_kPa": 359.1202113487038
+  },
+  {
+    "gas": "ALC",
+    "temperature_K": 424.0,
+    "pressure_kPa": 1000.0
+  },
+  {
+    "gas": "SIL",
+    "temperature_K": 164.0,
+    "pressure_kPa": 516.0
+  },
+  {
+    "gas": "SIL",
+    "temperature_K": 328.5,
+    "pressure_kPa": 1406.9381802486232
+  },
+  {
+    "gas": "SIL",
+    "temperature_K": 493.0,
+    "pressure_kPa": 2693.7558217272763
+  },
+  {
+    "gas": "SIL",
+    "temperature_K": 657.5,
+    "pressure_kPa": 4168.334489965796
+  },
+  {
+    "gas": "SIL",
+    "temperature_K": 822.0,
+    "pressure_kPa": 6000.0
+  },
+  {
+    "gas": "HCL",
+    "temperature_K": 247.0,
+    "pressure_kPa": 6.3
+  },
+  {
+    "gas": "HCL",
+    "temperature_K": 293.0,
+    "pressure_kPa": 29.256071629209043
+  },
+  {
+    "gas": "HCL",
+    "temperature_K": 339.0,
+    "pressure_kPa": 110.32098290335624
+  },
+  {
+    "gas": "HCL",
+    "temperature_K": 385.0,
+    "pressure_kPa": 352.86315306829306
+  },
+  {
+    "gas": "HCL",
+    "temperature_K": 431.0,
+    "pressure_kPa": 1000.0
+  },
+  {
+    "gas": "O3",
+    "temperature_K": 81.0,
+    "pressure_kPa": 250.0
+  },
+  {
+    "gas": "O3",
+    "temperature_K": 136.75,
+    "pressure_kPa": 859.6259284620769
+  },
+  {
+    "gas": "O3",
+    "temperature_K": 192.5,
+    "pressure_kPa": 1997.7742121507238
+  },
+  {
+    "gas": "O3",
+    "temperature_K": 248.25,
+    "pressure_kPa": 3635.2385280554267
+  },
+  {
+    "gas": "O3",
+    "temperature_K": 304.0,
+    "pressure_kPa": 6000.0
+  }
+]
