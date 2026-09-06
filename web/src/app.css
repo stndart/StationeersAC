@@ -90,6 +90,17 @@ pre {
   color: var(--muted);
 }
 
+.topbar .ref-link {
+  color: var(--cold);
+  text-decoration: none;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.topbar .ref-link:hover {
+  text-decoration: underline;
+}
+
 .topbar .status {
   margin-left: auto;
   font-size: 12px;

@@ -120,6 +120,7 @@
   <header class="topbar">
     <h1>Stationeers cascade constructor</h1>
     <span class="sub">Python solver · evaporator / condenser / CFHE</span>
+    <a class="ref-link" href="./Gasses-2026-04-19.png" target="_blank" rel="noopener">Gas phase diagram</a>
     <span class="status" class:live={status === "live"} class:bad={!!metaError || !!error}>{status}</span>
   </header>
   <div class="shell">
