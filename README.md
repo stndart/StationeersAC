@@ -25,7 +25,11 @@ Pressure locks invert that same curve by bisection. Outside the liquid window,
 endpoint tangents in log pressure preserve invalid lock values for freeze/critical
 warnings; those extensions are diagnostic only, not valid phase predictions.
 Old wiki boiling temperatures are retained as reference metadata, not curve anchors.
-Thermal properties (heat capacity, latent heat, liquid volume) are unchanged.
+Thermal properties (heat capacity, latent heat, liquid volume, and in-game molar
+mass) come from Stationeers Wiki
+[Module:Gas/data revision 28055](https://stationeers-wiki.com/index.php?title=Module:Gas/data&oldid=28055)
+(2026-09-02). Phase endpoints intentionally remain pinned to the separately
+documented 2026-04-19 diagram source above.
 
 `web/src/cascade/fixtures/phase_curve.json` contains endpoint and quarter-interval
 samples evaluated from the upstream formula, independently of the solver.

@@ -20,6 +20,29 @@ function assertClose(actual, expected, eps, label) {
   );
 }
 
+test("current wiki thermal properties are complete", () => {
+  // Module:Gas/data revision 28055 (2026-09-02). Keep this synchronized
+  // with the equivalent Python assertion in test_gases.py.
+  const expected = {
+    SIL: [101.0, 10000, 0.16, 166.0],
+    ALC: [33.0, 2000, 0.058, 18.0],
+    HCl: [37.0, 1000, 0.028, 36.0],
+    O3: [38.6, 1000, 0.026, 24.0],
+    N2H4: [48.4, 4000, 0.03, 32.0],
+  };
+  for (const [key, properties] of Object.entries(expected)) {
+    const gas = GASES[key];
+    assert.deepEqual([gas.shc, gas.latent, gas.v_liq, gas.mw], properties);
+    assert.equal(gas.can_refrigerate(), true, key);
+  }
+
+  assert.equal(GASES.N2.mw, 64.0);
+  assert.equal(GASES.X.mw, 28.0);
+  assert.equal(GASES.H2O.mw, 108.0);
+  assert.equal(GASES.HE.latent, 0.0);
+  assert.equal(GASES.HE.can_refrigerate(), false);
+});
+
 test("phase curves and inverse match upstream reference samples", () => {
   for (const row of load("phase_curve.json")) {
     const gas = get_gas(row.gas);

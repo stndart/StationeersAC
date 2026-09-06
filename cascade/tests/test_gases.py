@@ -11,6 +11,28 @@ from cascade.step import evaluate_step
 
 
 class TestPhaseCurves(unittest.TestCase):
+    def test_current_wiki_thermal_properties(self):
+        # Module:Gas/data revision 28055 (2026-09-02). Keep the mirrored
+        # browser assertion in golden.test.js synchronized with this table.
+        expected = {
+            "SIL": (101.0, 10000, 0.16, 166.0),
+            "ALC": (33.0, 2000, 0.058, 18.0),
+            "HCl": (37.0, 1000, 0.028, 36.0),
+            "O3": (38.6, 1000, 0.026, 24.0),
+            "N2H4": (48.4, 4000, 0.03, 32.0),
+        }
+        for key, properties in expected.items():
+            with self.subTest(gas=key):
+                gas = GASES[key]
+                self.assertEqual((gas.shc, gas.latent, gas.v_liq, gas.mw), properties)
+                self.assertTrue(gas.can_refrigerate())
+
+        self.assertEqual(GASES["N2"].mw, 64.0)
+        self.assertEqual(GASES["X"].mw, 28.0)
+        self.assertEqual(GASES["H2O"].mw, 108.0)
+        self.assertEqual(GASES["HE"].latent, 0.0)
+        self.assertFalse(GASES["HE"].can_refrigerate())
+
     def test_upstream_samples_and_inverse(self):
         path = Path(__file__).resolve().parents[2] / "web/src/cascade/fixtures/phase_curve.json"
         for row in json.loads(path.read_text()):

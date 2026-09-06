@@ -78,39 +78,39 @@
       "can_refrigerate": true,
       "t_freeze_C": -109.15,
       "t_crit_C": 548.85,
-      "notes": "Phase curve: zgralewski diagram (2026-04-19). Missing thermal properties remain estimates or unavailable."
+      "notes": "Phase curve: zgralewski diagram (2026-04-19). Thermal properties: Stationeers Wiki Module:Gas/data (2026-09-02)."
     },
     {
       "symbol": "ALC",
       "name": "Alcohol",
-      "can_refrigerate": false,
+      "can_refrigerate": true,
       "t_freeze_C": -41.15,
       "t_crit_C": 150.85,
-      "notes": "Phase curve: zgralewski diagram (2026-04-19). Missing thermal properties remain estimates or unavailable."
+      "notes": "Phase curve: zgralewski diagram (2026-04-19). Thermal properties: Stationeers Wiki Module:Gas/data (2026-09-02). Alcohol evaporates into methane in-game."
     },
     {
       "symbol": "HCl",
       "name": "Hydrochloric Acid",
-      "can_refrigerate": false,
+      "can_refrigerate": true,
       "t_freeze_C": -26.15,
       "t_crit_C": 157.85,
-      "notes": "Phase curve: zgralewski diagram (2026-04-19). Missing thermal properties remain estimates or unavailable."
+      "notes": "Phase curve: zgralewski diagram (2026-04-19). Thermal properties: Stationeers Wiki Module:Gas/data (2026-09-02)."
     },
     {
       "symbol": "O3",
       "name": "Ozone",
-      "can_refrigerate": false,
+      "can_refrigerate": true,
       "t_freeze_C": -192.15,
       "t_crit_C": 30.85,
-      "notes": "Phase curve: zgralewski diagram (2026-04-19). Missing thermal properties remain estimates or unavailable."
+      "notes": "Phase curve: zgralewski diagram (2026-04-19). Thermal properties: Stationeers Wiki Module:Gas/data (2026-09-02)."
     },
     {
       "symbol": "N2H4",
       "name": "Hydrazine / Fuel",
-      "can_refrigerate": false,
+      "can_refrigerate": true,
       "t_freeze_C": -27.15,
       "t_crit_C": 247.85,
-      "notes": "Phase curve: zgralewski diagram (2026-04-19). Missing thermal properties remain estimates or unavailable."
+      "notes": "Phase curve: zgralewski diagram (2026-04-19). Thermal properties: Stationeers Wiki Module:Gas/data (2026-09-02)."
     }
   ],
   "lockable_fields": [
