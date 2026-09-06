@@ -135,6 +135,26 @@ class TestHydrogenChain(unittest.TestCase):
 
 
 class TestChainMinQ(unittest.TestCase):
+    def test_optimizer_beats_known_feasible_cooling_power(self) -> None:
+        # A hand-picked, coupled chain already carries 9.4775 kJ/tick.
+        # The old widest-span search ceiling stopped at only 1.2619.
+        powers = []
+        for hot, cold, tc, te in [(40, 20, 65, 0), (20, 0, 45, -20)]:
+            spec = StepSpec(media="X", n_cfhe=1, t_cond_C=tc, t_evap_C=te)
+            resolved = optimize_step(spec, k_from_c(hot), k_from_c(cold))
+            ev = evaluate_step(resolved, k_from_c(hot), k_from_c(cold))
+            self.assertTrue(ev.operable)
+            powers.append(ev.q_kj_tick)
+        self.assertAlmostEqual(min(powers), 9.4775, places=4)
+        result = run_cascade([StepSpec(media="X", n_cfhe=1)] * 2, 40, 0)
+        self.assertGreaterEqual(result.q_at_target_kj_tick, min(powers))
+        for ev in result.steps:
+            self.assertTrue(ev.operable)
+            self.assertEqual(ev.resolved.n_cfhe, 1)
+        self.assertAlmostEqual(result.steps[0].t_cold_K, result.steps[1].t_hot_K)
+        self.assertAlmostEqual(result.q_at_target_kj_tick,
+                               min(ev.q_kj_tick for ev in result.steps), places=4)
+
     def test_chain_q_is_min_of_steps(self) -> None:
         r = run_cascade(
             steps=[StepSpec(media="X"), StepSpec(media="CH4")],

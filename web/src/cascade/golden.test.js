@@ -119,3 +119,22 @@ test("locked evaporator T is not rewritten", () => {
   assert.equal(got.steps[0].locked.t_evap_C, true);
   assertClose(got.steps[0].t_evap_C, -150, 0.05, "t_evap_C");
 });
+
+
+test("optimizer beats a known feasible coupled chain in kJ/tick", () => {
+  const got = runFromBody({
+    t_hot_C: 40,
+    t_target_C: 0,
+    steps: [{ media: "X", n_cfhe: 1 }, { media: "X", n_cfhe: 1 }],
+  });
+  // Fixed ports 40 -> 20 -> 0 C, condensers 65/45 C and evaporators
+  // 0/-20 C deliver 9.4775. The old search ceiling was only 1.2619.
+  assert.ok(got.q_at_target_kj_tick >= 9.4775, `Q=${got.q_at_target_kj_tick}`);
+  assertClose(got.q_at_target_kj_tick, 10.2294, 0.0001, "Python regression Q");
+  for (const step of got.steps) {
+    assert.equal(step.operable, true);
+    assert.equal(step.n_cfhe, 1);
+    assert.equal(step.locked.n_cfhe, true);
+  }
+  assertClose(got.steps[0].t_cold_C, got.steps[1].t_hot_C, 0.0001, "coupled ports");
+});

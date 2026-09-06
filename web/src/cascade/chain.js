@@ -8,7 +8,6 @@ import {
   c_from_k,
   k_from_c,
   kj_tick_to_kj_s,
-  q_feed_kj_tick,
   q_radiator_kj_tick,
   ua_chamber_kj_tick_k,
 } from "./physics.js";
@@ -82,18 +81,16 @@ function tryQ(specs, t_dump_K, t_target_K, q_need) {
 }
 
 function maxFeedBound(specs) {
-  let cap = 0.0;
+  const caps = [];
   for (const spec of specs) {
     const gas = get_gas(spec.media);
-    if (!gas.can_refrigerate()) continue;
-    const n_evap = spec.n_evap_chambers || 1;
-    const n_cfhe = spec.n_cfhe || 6;
-    const w = operable_window(gas);
-    if (w == null) continue;
-    const q = q_feed_kj_tick(gas, w[1], w[0], n_cfhe, n_evap);
-    cap = Math.max(cap, q);
+    if (!gas.can_refrigerate() || operable_window(gas) == null) return 0.0;
+    const n_evap = spec.n_evap_chambers ?? 1;
+    // Full latent feed bounds Q before sensible-heat and HX losses.
+    // The widest temperature span underestimates the available capacity.
+    caps.push(n_evap * gas.mol_per_tick_feed() * gas.latent / 1000.0);
   }
-  return Math.max(cap, 0.5);
+  return caps.length ? Math.max(0.0, Math.min(...caps)) : 0.0;
 }
 
 function floorIfSacrifice(specs) {

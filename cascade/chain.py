@@ -99,21 +99,17 @@ def _try_q(specs: list[StepSpec], t_dump_K: float, t_target_K: float, q_need: fl
 
 
 def _max_feed_bound(specs: list[StepSpec]) -> float:
-    from cascade.physics import q_feed_kj_tick
-
-    cap = 0.0
+    """Upper bound on chain cooling power, before sensible-heat and HX losses."""
+    caps = []
     for spec in specs:
         gas = get_gas(spec.media)
-        if not gas.can_refrigerate():
-            continue
-        n_evap = spec.n_evap_chambers or 1
-        n_cfhe = spec.n_cfhe or 6
-        w = operable_window(gas)
-        if w is None:
-            continue
-        q = q_feed_kj_tick(gas, w[1], w[0], n_cfhe, n_evap)
-        cap = max(cap, q)
-    return max(cap, 0.5)
+        if not gas.can_refrigerate() or operable_window(gas) is None:
+            return 0.0
+        n_evap = spec.n_evap_chambers if spec.n_evap_chambers is not None else 1
+        # Every stage must carry Q. Full latent feed is an upper bound;
+        # evaluating feed at the widest span instead underestimates capacity.
+        caps.append(n_evap * gas.mol_per_tick_feed() * gas.latent / 1000.0)
+    return max(0.0, min(caps, default=0.0))
 
 
 def _floor_if_sacrifice(specs: list[StepSpec]) -> float:
